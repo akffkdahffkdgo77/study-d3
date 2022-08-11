@@ -1,25 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useRef } from 'react';
+import * as d3 from 'd3';
+
+const sampleData = [100, 10, 30, 50, 10, 70, 200, 90];
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const lineChart = useRef();
+
+    useEffect(() => {
+        const svg = d3.select(lineChart.current);
+        sampleData.forEach((data, index) => {
+            svg.append('rect')
+                .attr('height', data)
+                .attr('width', 30)
+                .attr('x', 40 * index + 100)
+                .attr('y', 300 - data + 100);
+        });
+    }, []);
+
+    return (
+        <div>
+            <h1>TEST</h1>
+            <svg width="500" height="500" ref={lineChart} />
+        </div>
+    );
 }
 
 export default App;
