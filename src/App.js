@@ -1,5 +1,6 @@
 import BarChart from './BarChart';
-import LineChart from './LineChart';
+import Test from './Test';
+// import LineChart from './LineChart';
 
 // https://github.com/d3/d3/blob/main/API.md#d3-api-reference
 function App() {
@@ -9,7 +10,8 @@ function App() {
                 Common Chart Clone Coding
             </h1>
             <BarChart />
-            <LineChart />
+            <Test />
+            {/* <LineChart /> */}
         </div>
     );
 }
