@@ -75,22 +75,22 @@ export default function Test() {
             .style('-webkit-tap-highlight-color', 'transparent')
             .style('overflow', 'visible');
 
-        const focus = svg.append('g').attr('class', 'focus').style('display', 'none');
-        focus.append('circle').attr('r', 5).attr('class', 'circle').style('opacity', 0);
+        // const focus = svg.append('g').attr('class', 'focus').style('display', 'none');
+        // focus.append('circle').attr('r', 5).attr('class', 'circle').style('opacity', 0);
 
-        const tooltip = d3
-            .select(lineChart.current)
-            .append('div')
-            .attr('class', 'tooltip')
-            .style('position', 'absolute')
-            .style('z-index', '10')
-            .style('padding', '10px')
-            .style('minWidth', '100px')
-            .style('background', '#252B2F')
-            .style('border-radius', '4px')
-            .style('color', '#fff');
+        // const tooltip = d3
+        //     .select(lineChart.current)
+        //     .append('div')
+        //     .attr('class', 'tooltip')
+        //     .style('position', 'absolute')
+        //     .style('z-index', '10')
+        //     .style('padding', '10px')
+        //     .style('minWidth', '100px')
+        //     .style('background', '#252B2F')
+        //     .style('border-radius', '4px')
+        //     .style('color', '#fff');
 
-        svg.append('rect').attr('class', 'overlay').attr('width', width).attr('height', height).style('opacity', 0);
+        // svg.append('rect').attr('class', 'overlay').attr('width', width).attr('height', height).style('opacity', 0);
         // .on('mouseover', () => {
         //     focus.style('display', null);
         // })
@@ -99,24 +99,24 @@ export default function Test() {
         // })
         // .on('mousemove', mousemove);
 
-        function mousemove(event) {
-            // const bisect = d3.bisectLeft((d, i) => i);
-            // const xPos = d3.pointer(event)[0];
-            // const x0 = bisect(data, xScale.invert(xPos));
+        // function mousemove(event) {
+        //     // const bisect = d3.bisectLeft((d, i) => i);
+        //     // const xPos = d3.pointer(event)[0];
+        //     // const x0 = bisect(data, xScale.invert(xPos));
 
-            const x0 = d3.bisectCenter(indexData, xScale.invert(d3.pointer(event)[0]));
-            const d0 = data[x0];
-            const x = x0 > 0 ? x0 - 1 : 0;
-            console.log(x, x0, d0);
+        //     const x0 = d3.bisectCenter(indexData, xScale.invert(d3.pointer(event)[0]));
+        //     const d0 = data[x0];
+        //     // const x = x0 === data.length - 1 ? data.length : x0 > 0 ? x0 - 1 : 0;
+        //     console.log(x, x0, d0);
 
-            // focus.attr('transform', `translate(${xScale(x)},${yScale(d0.value)})`);
-            tooltip.transition().duration(300).style('opacity', 0.9);
-            console.log(`translate(${xScale(x) + 30}px,${yScale(d0.value) - 30}px)`);
-            console.log(xScale(x), d0.value, yScale(yData[x0]));
-            tooltip
-                .html('testtesttesttest')
-                .style('transform', `translate(${xScale(x)}px,-${graphHeight - yScale(yData[x0]) - 30}px)`);
-        }
+        //     // focus.attr('transform', `translate(${xScale(x)},${yScale(d0.value)})`);
+        //     tooltip.transition().duration(300).style('opacity', 0.9);
+        //     console.log(`translate(${xScale(x0) + 30}px,${yScale(d0.value) - 30}px)`);
+        //     console.log(xScale(x0), yScale(yData[x0], graphHeight - yScale(yData[x0]) - 30));
+        //     tooltip
+        //         .html('testtesttesttest')
+        //         .style('transform', `translate(${xScale(x0)}px,-${graphHeight - yScale(yData[x0]) - 30}px)`);
+        // }
 
         // See : https://observablehq.com/@harrylove/draw-a-circle-dot-marker-on-a-line-path-with-d3
         // intersect하는 부분에 circle 추가하기
@@ -222,59 +222,70 @@ export default function Test() {
 
         // // 툴팁에 표시될 데이터 형식 설정하기
         // const formatDate = xScale.tickFormat(null, '%Y-%m-%d');
-        // // const formatValue = yScale.tickFormat(100, ',');
-        // const title = (i) => `${formatDate(xData[i])}\n${yData[i].toLocaleString()}`;
+        // const formatValue = yScale.tickFormat(100, ',');
+        const title = (i) => `${xData[i]}\n${yData[i].toLocaleString()}`;
 
-        // function onEnter(event) {
-        //     // https://github.com/d3/d3-scale/blob/v4.0.2/README.md#continuous_invert
-        //     // invert : 현재 마우스 포인터의 위치를 넘겨주면 그 위치에 해당하는 실제 데이터 값을 반환
-        //     // continuous scale만 사용 가능한 함수
-        //     // https://github.com/d3/d3-array/blob/v3.2.0/README.md#bisectCenter
-        //     // bisectCenter : x의 값에 가장 근접한 값의 index를 반환
-        //     // xData를 넘겨주면 xData array에서 넘겨 받은 x의 값에 가까운 데이터를 찾고 해당 데이터의 index를 반환
-        //     const i = d3.bisectCenter(xData, xScale.invert(d3.pointer(event)[0]));
-        //     console.log('on enter', i);
+        function onEnter(event) {
+            // https://github.com/d3/d3-scale/blob/v4.0.2/README.md#continuous_invert
+            // invert : 현재 마우스 포인터의 위치를 넘겨주면 그 위치에 해당하는 실제 데이터 값을 반환
+            // continuous scale만 사용 가능한 함수
+            // https://github.com/d3/d3-array/blob/v3.2.0/README.md#bisectCenter
+            // bisectCenter : x의 값에 가장 근접한 값의 index를 반환
+            // xData를 넘겨주면 xData array에서 넘겨 받은 x의 값에 가까운 데이터를 찾고 해당 데이터의 index를 반환
+            const i = d3.bisectCenter(indexData, xScale.invert(d3.pointer(event)[0]));
+            const left = d3.bisectLeft(indexData, xScale.invert(d3.pointer(event)[0]));
+            const right = d3.bisectRight(indexData, xScale.invert(d3.pointer(event)[0]));
+            console.log('on enter', i, left, right);
 
-        //     // 툴팁 설정
-        //     tooltip.style('display', null);
-        //     tooltip.attr('transform', `translate(${xScale(xData[i])},${-mt + yScale(yData[i])})`);
-        //     console.log(`translate(${-ml + xScale(xData[i])},${-mt + yScale(yData[i])})`);
+            // const coord = right === 0 ? right : left === data.length - 1 ? left : i > 0 ? i - 1 : 0;
+            const coord = left === data.length || right === data.length ? data.length : i > 0 ? i - 1 : 0;
 
-        //     const path = tooltip.selectAll('path').data([,]).join('path').attr('fill', 'white').attr('stroke', 'black');
-        //     const text = tooltip
-        //         .selectAll('text')
-        //         .data([,])
-        //         .join('text')
-        //         .call((text) =>
-        //             text
-        //                 .selectAll('tspan')
-        //                 .data(`${title(i)}`.split(/\n/))
-        //                 .join('tspan')
-        //                 .attr('x', 0)
-        //                 .attr('y', (_, i) => `${i * 1.1}em`)
-        //                 .attr('font-weight', (_, i) => (i ? null : 'bold'))
-        //                 .text((d) => d)
-        //         );
+            // 툴팁 설정
+            tooltip.style('display', null);
+            tooltip.attr(
+                'transform',
+                `translate(${100 + xScale(coord === data.length ? coord - 1 : coord)},${
+                    yScale(yData[coord === data.length ? data.length - 1 : coord]) + 70
+                })`
+            );
+            console.log(`translate(${xScale(coord)},${yScale(yData[coord])})`);
+            console.log(xScale(1) - xScale(0));
 
-        //     const { y, width: w, height: h } = text.node().getBBox();
-        //     console.log(y, w, h);
-        //     text.attr('transform', `translate(${-w / 2},${15 - y})`);
-        //     path.attr('d', `M${-w / 2 - 10},5H-5l5,-5l5,5H${w / 2 + 10}v${h + 20}h-${w + 20}z`);
-        //     svg.property('value', singleData[i]).dispatch('input', { bubbles: true });
-        // }
+            const path = tooltip.selectAll('path').data([,]).join('path').attr('fill', 'white').attr('stroke', 'black');
+            const text = tooltip
+                .selectAll('text')
+                .data([,])
+                .join('text')
+                .call((text) =>
+                    text
+                        .selectAll('tspan')
+                        .data(`${title(coord === data.length ? data.length - 1 : coord)}`.split(/\n/))
+                        .join('tspan')
+                        .attr('x', 0)
+                        .attr('y', (_, i) => `${i * 1.1}em`)
+                        .attr('font-weight', (_, i) => (i ? null : 'bold'))
+                        .text((d) => d)
+                );
 
-        // function onLeave() {
-        //     tooltip.style('display', 'none');
-        //     svg.node().value = null;
-        //     svg.dispatch('input', { bubbles: true });
-        // }
+            const { y, width: w, height: h } = text.node().getBBox();
+            console.log(y, w, h);
+            text.attr('transform', `translate(${-w / 2},${15 - y})`);
+            path.attr('d', `M${-w / 2 - 10},5H-5l5,-5l5,5H${w / 2 + 10}v${h + 20}h-${w + 20}z`);
+            svg.property('value', singleData[coord]).dispatch('input', { bubbles: true });
+        }
 
-        // // TOOLTIP 생성하기
-        // const tooltip = svg.append('g').style('pointer-events', 'none');
+        function onLeave() {
+            tooltip.style('display', 'none');
+            svg.node().value = null;
+            svg.dispatch('input', { bubbles: true });
+        }
+
+        // TOOLTIP 생성하기
+        const tooltip = svg.append('g').style('pointer-events', 'none');
 
         // 그래프에 툴팁 관련 이벤트 리스너 추가하기
-        svg.on('pointerenter pointermove', mousemove)
-            // .on('pointerleave', onLeave)
+        svg.on('pointerenter pointermove', onEnter)
+            .on('pointerleave', onLeave)
             .on('touchstart', (event) => event.preventDefault());
 
         // 라인 그리기
