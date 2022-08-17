@@ -1,6 +1,6 @@
+/* eslint-disable no-sparse-arrays */
 import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import { bisectCenter } from 'd3';
 
 const width = 1000;
 const height = 800;
@@ -56,7 +56,6 @@ export default function Test() {
 
         // TODO : Tooltip
         // https://observablehq.com/@d3/line-with-tooltip
-
         const xData = data.map((d) => new Date(d.date));
         const yData = data.map((d) => d.value);
         const singleData = d3.map(data, (d) => d);
@@ -74,49 +73,6 @@ export default function Test() {
             .attr('font-size', 10)
             .style('-webkit-tap-highlight-color', 'transparent')
             .style('overflow', 'visible');
-
-        // const focus = svg.append('g').attr('class', 'focus').style('display', 'none');
-        // focus.append('circle').attr('r', 5).attr('class', 'circle').style('opacity', 0);
-
-        // const tooltip = d3
-        //     .select(lineChart.current)
-        //     .append('div')
-        //     .attr('class', 'tooltip')
-        //     .style('position', 'absolute')
-        //     .style('z-index', '10')
-        //     .style('padding', '10px')
-        //     .style('minWidth', '100px')
-        //     .style('background', '#252B2F')
-        //     .style('border-radius', '4px')
-        //     .style('color', '#fff');
-
-        // svg.append('rect').attr('class', 'overlay').attr('width', width).attr('height', height).style('opacity', 0);
-        // .on('mouseover', () => {
-        //     focus.style('display', null);
-        // })
-        // .on('mouseout', () => {
-        //     tooltip.transition().duration(300).style('opacity', 0);
-        // })
-        // .on('mousemove', mousemove);
-
-        // function mousemove(event) {
-        //     // const bisect = d3.bisectLeft((d, i) => i);
-        //     // const xPos = d3.pointer(event)[0];
-        //     // const x0 = bisect(data, xScale.invert(xPos));
-
-        //     const x0 = d3.bisectCenter(indexData, xScale.invert(d3.pointer(event)[0]));
-        //     const d0 = data[x0];
-        //     // const x = x0 === data.length - 1 ? data.length : x0 > 0 ? x0 - 1 : 0;
-        //     console.log(x, x0, d0);
-
-        //     // focus.attr('transform', `translate(${xScale(x)},${yScale(d0.value)})`);
-        //     tooltip.transition().duration(300).style('opacity', 0.9);
-        //     console.log(`translate(${xScale(x0) + 30}px,${yScale(d0.value) - 30}px)`);
-        //     console.log(xScale(x0), yScale(yData[x0], graphHeight - yScale(yData[x0]) - 30));
-        //     tooltip
-        //         .html('testtesttesttest')
-        //         .style('transform', `translate(${xScale(x0)}px,-${graphHeight - yScale(yData[x0]) - 30}px)`);
-        // }
 
         // See : https://observablehq.com/@harrylove/draw-a-circle-dot-marker-on-a-line-path-with-d3
         // intersect하는 부분에 circle 추가하기
@@ -149,15 +105,9 @@ export default function Test() {
             // line chart는 continuous data -> 그래야 tooltip 그릴 수 있음
             .scaleLinear()
             // [min, max] 반환
-            // .domain(d3.extent(data, (d) => new Date(d.date)))
             .domain(d3.extent(data, (d, i) => i))
             .nice()
             .range([0, graphWidth]);
-        // .padding(-1);
-
-        // xScale.ticks(d3.timeDay.every(1));
-        // xScale.tickFormat(null, '%Y-%m-%d');
-        // .ticks(20);
 
         // x축 생성하기
         const xAxis = d3
@@ -200,11 +150,6 @@ export default function Test() {
             .call(xAxis)
             .call((g) => g.select('.domain').remove())
             .call((g) => g.selectAll('.tick').attr('stroke-opacity', 0.1));
-        // .call((g) =>
-        //     g
-        //         .selectAll('.tick line')
-        //         .attr('transform', `translate(}, 0)`)
-        // );
 
         // y축 설정
         // 축 및 grid line 색상 변경
@@ -221,8 +166,6 @@ export default function Test() {
             );
 
         // // 툴팁에 표시될 데이터 형식 설정하기
-        // const formatDate = xScale.tickFormat(null, '%Y-%m-%d');
-        // const formatValue = yScale.tickFormat(100, ',');
         const title = (i) => `${xData[i]}\n${yData[i].toLocaleString()}`;
 
         function onEnter(event) {
@@ -300,7 +243,6 @@ export default function Test() {
 
         graph
             .append('path')
-            // .attr('transform', `translate(${xScale.step()}, 0)`)
             .attr('fill', 'none')
             .attr('stroke', 'rgba(54, 162, 235, 0.2)')
             .attr('stroke-width', 3)
@@ -311,26 +253,6 @@ export default function Test() {
             .attr('marker-end', 'url(#dot)')
             .attr('d', line(data))
             .call(transition);
-
-        // const line = d3
-        //     .line()
-        //     .defined((i) => !isNaN(yData[i]))
-        //     .x((i) => xScale(xData[i]))
-        //     .y((i) => yScale(yData[i]));
-
-        // graph
-        //     .append('path')
-        //     .datum(data)
-        //     .attr('fill', 'none')
-        //     .attr('stroke', 'rgba(54, 162, 235, 0.2)')
-        //     .attr('stroke-width', 3)
-        //     .attr('stroke-linecap', 'round')
-        //     .attr('stroke-linejoin', 'round')
-        //     .attr('marker-start', 'url(#dot)')
-        //     .attr('marker-mid', 'url(#dot)')
-        //     .attr('marker-end', 'url(#dot)')
-        //     .attr('d', line(indexData))
-        //     .call(transition);
 
         // See : https://observablehq.com/@jurestabuc/animated-line-chart
         function transition(path) {
