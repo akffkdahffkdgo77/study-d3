@@ -37,3 +37,7 @@ code {
     height: 14px;
     background-color: rgba(54, 162, 235, 0.2);
 }
+
+.bubbles:hover {
+    stroke: black;
+}
