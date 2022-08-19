@@ -8,108 +8,11 @@ let [mt, mr, mb, ml] = [50, 50, 50, 50];
 const graphWidth = width - mr - ml;
 const graphHeight = height - mt - mb;
 
-const data = [
-    {
-        x: Math.floor(Math.random() * (12000 - 100)) + 100,
-        y: Math.floor(Math.random() * (500 - 100)) + 100,
-        z: Math.floor(Math.random() * (50 - 10)) + 10
-    },
-    {
-        x: Math.floor(Math.random() * (12000 - 100)) + 100,
-        y: Math.floor(Math.random() * (500 - 100)) + 100,
-        z: Math.floor(Math.random() * (50 - 10)) + 10
-    },
-    {
-        x: Math.floor(Math.random() * (12000 - 100)) + 100,
-        y: Math.floor(Math.random() * (500 - 100)) + 100,
-        z: Math.floor(Math.random() * (50 - 10)) + 10
-    },
-    {
-        x: Math.floor(Math.random() * (12000 - 100)) + 100,
-        y: Math.floor(Math.random() * (500 - 100)) + 100,
-        z: Math.floor(Math.random() * (50 - 10)) + 10
-    },
-    {
-        x: Math.floor(Math.random() * (12000 - 100)) + 100,
-        y: Math.floor(Math.random() * (500 - 100)) + 100,
-        z: Math.floor(Math.random() * (50 - 10)) + 10
-    },
-    {
-        x: Math.floor(Math.random() * (12000 - 100)) + 100,
-        y: Math.floor(Math.random() * (500 - 100)) + 100,
-        z: Math.floor(Math.random() * (50 - 10)) + 10
-    },
-    {
-        x: Math.floor(Math.random() * (12000 - 100)) + 100,
-        y: Math.floor(Math.random() * (500 - 100)) + 100,
-        z: Math.floor(Math.random() * (50 - 10)) + 10
-    },
-    {
-        x: Math.floor(Math.random() * (12000 - 100)) + 100,
-        y: Math.floor(Math.random() * (500 - 100)) + 100,
-        z: Math.floor(Math.random() * (50 - 10)) + 10
-    },
-    {
-        x: Math.floor(Math.random() * (12000 - 100)) + 100,
-        y: Math.floor(Math.random() * (500 - 100)) + 100,
-        z: Math.floor(Math.random() * (50 - 10)) + 10
-    },
-    {
-        x: Math.floor(Math.random() * (12000 - 100)) + 100,
-        y: Math.floor(Math.random() * (500 - 100)) + 100,
-        z: Math.floor(Math.random() * (50 - 10)) + 10
-    },
-    {
-        x: Math.floor(Math.random() * (12000 - 100)) + 100,
-        y: Math.floor(Math.random() * (500 - 100)) + 100,
-        z: Math.floor(Math.random() * (50 - 10)) + 10
-    },
-    {
-        x: Math.floor(Math.random() * (12000 - 100)) + 100,
-        y: Math.floor(Math.random() * (500 - 100)) + 100,
-        z: Math.floor(Math.random() * (50 - 10)) + 10
-    },
-    {
-        x: Math.floor(Math.random() * (12000 - 100)) + 100,
-        y: Math.floor(Math.random() * (500 - 100)) + 100,
-        z: Math.floor(Math.random() * (50 - 10)) + 10
-    },
-    {
-        x: Math.floor(Math.random() * (12000 - 100)) + 100,
-        y: Math.floor(Math.random() * (500 - 100)) + 100,
-        z: Math.floor(Math.random() * (50 - 10)) + 10
-    },
-    {
-        x: Math.floor(Math.random() * (12000 - 100)) + 100,
-        y: Math.floor(Math.random() * (500 - 100)) + 100,
-        z: Math.floor(Math.random() * (50 - 10)) + 10
-    },
-    {
-        x: Math.floor(Math.random() * (12000 - 100)) + 100,
-        y: Math.floor(Math.random() * (500 - 100)) + 100,
-        z: Math.floor(Math.random() * (50 - 10)) + 10
-    },
-    {
-        x: Math.floor(Math.random() * (12000 - 100)) + 100,
-        y: Math.floor(Math.random() * (500 - 100)) + 100,
-        z: Math.floor(Math.random() * (50 - 10)) + 10
-    },
-    {
-        x: Math.floor(Math.random() * (12000 - 100)) + 100,
-        y: Math.floor(Math.random() * (500 - 100)) + 100,
-        z: Math.floor(Math.random() * (50 - 10)) + 10
-    },
-    {
-        x: Math.floor(Math.random() * (12000 - 100)) + 100,
-        y: Math.floor(Math.random() * (500 - 100)) + 100,
-        z: Math.floor(Math.random() * (50 - 10)) + 10
-    },
-    {
-        x: Math.floor(Math.random() * (12000 - 100)) + 100,
-        y: Math.floor(Math.random() * (500 - 100)) + 100,
-        z: Math.floor(Math.random() * (50 - 10)) + 10
-    }
-];
+const data = Array.from(Array(100)).map(() => ({
+    x: Math.floor(Math.random() * (12000 - 100)) + 100,
+    y: Math.floor(Math.random() * (500 - 100)) + 100,
+    z: Math.floor(Math.random() * (50 - 10)) + 10
+}));
 
 /*
     References :
