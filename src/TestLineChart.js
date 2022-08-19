@@ -35,7 +35,7 @@ const data = [
     https://observablehq.com/@kellytall/day-one-a-line-chart
 */
 
-export default function LineChart() {
+export default function TestLineChart() {
     const lineChart = useRef(null);
     const rendered = useRef(true);
 

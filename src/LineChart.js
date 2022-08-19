@@ -27,7 +27,7 @@ const data = [
 */
 
 // https://observablehq.com/@d3/line-with-tooltip
-export default function Test() {
+export default function LineChart() {
     const lineChart = useRef(null);
     const rendered = useRef(true);
 
