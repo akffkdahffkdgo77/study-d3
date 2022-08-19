@@ -33,6 +33,10 @@ const data = [
     z: Math.floor(Math.random() * (1000000 - 100)) + 100
 }));
 
+/**
+ * References :
+ * https://d3-graph-gallery.com/graph/barplot_stacked_basicWide.html
+ */
 export default function StackedBarChart() {
     const barChart = useRef(null);
     const rendered = useRef(true);
