@@ -46,12 +46,12 @@ export default function BarChart() {
             .attr('class', 'd3-tooltip')
             .style('position', 'absolute')
             .style('z-index', '10')
-            .style('visibility', 'hidden')
-            .style('padding', '10px')
             .style('minWidth', '100px')
-            .style('background', '#252B2F')
+            .style('padding', '10px')
             .style('border-radius', '4px')
-            .style('color', '#fff');
+            .style('color', '#fff')
+            .style('background', '#252B2F')
+            .style('visibility', 'hidden');
 
         const svg = d3
             .select(barChart.current)
