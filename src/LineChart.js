@@ -21,12 +21,12 @@ const data = [
     { date: '2022-05-10T00:00:00.000Z', value: Math.floor(Math.random() * (1000000 - 100)) + 100 }
 ];
 
-/*
-    References :
-    https://observablehq.com/@kellytall/day-one-a-line-chart
-*/
+/**
+ *  References :
+ *  https://observablehq.com/@kellytall/day-one-a-line-chart
+ *  https://observablehq.com/@d3/line-with-tooltip
+ */
 
-// https://observablehq.com/@d3/line-with-tooltip
 export default function LineChart() {
     const lineChart = useRef(null);
     const rendered = useRef(true);
