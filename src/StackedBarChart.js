@@ -49,19 +49,6 @@ export default function StackedBarChart() {
         rendered.current = false;
 
         // 기본 canvas 설정
-        const tooltip = d3
-            .select('body')
-            .append('div')
-            .attr('class', 'd3-tooltip')
-            .style('position', 'absolute')
-            .style('z-index', '10')
-            .style('minWidth', '100px')
-            .style('padding', '10px')
-            .style('border-radius', '4px')
-            .style('color', '#fff')
-            .style('background', '#252B2F')
-            .style('visibility', 'hidden');
-
         const svg = d3
             .select(barChart.current)
             .append('svg')
@@ -77,49 +64,36 @@ export default function StackedBarChart() {
             // translate를 해서 그래프가 전체 캔버스의 중심에서 그려지도록 설정
             .attr('transform', `translate(${ml}, ${mt})`);
 
-        const xData = data.map((item) => item.krName);
+        // DATA Pre-processing
+        const xLabels = data.map((item) => item.krName);
         const subGroup = ['x', 'y', 'z'];
+        const yLabels = d3.extent(data, (d) => d.x + d.y + d.z);
 
+        // scale band -> not continuous data set
         // domain -> 실제 데이터 []
         // range -> 그래프에 표시될 데이터의 최소, 최대값
         // padding -> 간격
-        const xScale = d3.scaleBand().domain(xData).range([0, graphWidth]).padding(0.25);
+        const xScale = d3.scaleBand().domain(xLabels).range([0, graphWidth]).padding(0.25);
 
         // https://observablehq.com/@d3/d3-scalelinear#cell-174
         // Y축의 값들이 그래프의 끝에 너무 가깝지 않도록 마진을 추가
         // scale.nice() -> 축의 값이 2,5,10의 배수로 나오도록 해줌
+        const yScale = d3.scaleLinear().domain([0, yLabels[1]]).nice().range([graphHeight, 0]);
 
-        console.log(d3.extent(data, (d) => d.x + d.y + d.z));
-        const yScale = d3
-            .scaleLinear()
-            // .domain([0, data.reduce((accumulator, a) => a.x + a.y + a.z + accumulator, 0)])
-            .domain(d3.extent(data, (d) => d.x + d.y + d.z))
-            .domain([0, 3000000])
-            .nice()
-            .range([graphHeight, 0]);
-
-        // X축, Y축
+        // X축, Y축 설정하기
         const xAxisG = graph.append('g');
         const xAxis = d3.axisBottom(xScale).tickSize(graphHeight).tickPadding(10);
-
         const yAxisG = graph.append('g');
         const yAxis = d3.axisLeft(yScale);
 
+        // Sub Group별 색상 설정하기
         const color = d3.scaleOrdinal().domain(subGroup).range(['#000000', '#e41a1c', '#377eb8', '#4daf4a']);
 
-        // d3.csv('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_stacked.csv').then(
-        //     (data) => {
-        //         console.log(data.columns.splice(1));
-        //         console.log(d3.stack().keys(['Nitrogen', 'normal', 'stress'])(data));
-
-        //         return data;
-        //     }
-        // );
-
+        // 중요!
+        // Sub Group별로 stack을 만듬
         const stackedData = d3.stack().keys(subGroup)(data);
-        // console.log(stackedData);
-        // console.log(xScale.bandwidth());
 
+        // X축 Styling
         xAxisG
             .call(xAxis)
             .call((g) => g.select('.domain').attr('stroke', 'transparent'))
@@ -129,35 +103,31 @@ export default function StackedBarChart() {
                     .selectAll('.tick line')
                     .attr('transform', `translate(${xScale.bandwidth() - (xScale.step() - xScale.bandwidth())}, 0)`)
             );
-        // xAxisG.selectAll('text').attr('transform', 'translate(0, 10)');
 
+        // Y축 Styling
         yAxisG
             .call(yAxis)
             .call((g) => g.select('.domain').attr('stroke', '#eeeeee'))
             .call((g) => g.selectAll('.tick').attr('stroke-opacity', 0.1))
             .call((g) => g.selectAll('.tick line').clone().attr('x2', graphWidth).attr('stroke-opacity', 0.1));
 
-        graph
-            .append('g')
-            .selectAll('g')
-            // Enter in the stack data = loop key per key = group per group
-            .data(stackedData)
+        // Stacked Bar Graph 그리기
+        // Sub Group별로 stack을 만든 데이터를 넘겨줌
+        const barG = graph.append('g').selectAll('g').data(stackedData);
+
+        // Sub Group마다 rect를 만듬
+        const bar = barG
             .join('g')
             .attr('fill', (d) => color(d.key))
             .selectAll('rect')
-            // enter a second time = loop subgroup per subgroup to add all rectangles
-            .data((d) => d)
-            .join('rect')
+            .data((d) => d);
+
+        // rect를 합치면서 하나의 bar 그리기
+        bar.join('rect')
             .attr('x', (d) => xScale(d.data.krName))
-            .attr('y', (d) => {
-                console.log('y', d, yScale(d[1]));
-                return yScale(d[1]);
-            })
-            .attr('height', (d) => {
-                console.log('height', yScale(d[0]) - yScale(d[1]));
-                return yScale(d[0]) - yScale(d[1]);
-            })
-            .attr('width', xScale.bandwidth());
+            .attr('y', (d) => yScale(d[1]))
+            .attr('width', xScale.bandwidth())
+            .attr('height', (d) => yScale(d[0]) - yScale(d[1]));
 
         // const bars = graph.selectAll('rect');
 
