@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
+import { createAxis, createCanvas } from './utils';
 
 const width = 800;
 const height = 800;
@@ -36,8 +37,9 @@ const data = [
 }));
 
 /**
- * References :
- * https://d3-graph-gallery.com/graph/barplot_stacked_basicWide.html
+ *  References :
+ *  https://d3-graph-gallery.com/graph/barplot_stacked_basicWide.html
+ *  https://d3-graph-gallery.com/graph/barplot_stacked_hover.html
  */
 export default function StackedBarChart() {
     const barChart = useRef(null);
@@ -50,68 +52,89 @@ export default function StackedBarChart() {
 
         rendered.current = false;
 
-        // 기본 canvas 설정
-        const svg = d3
-            .select(barChart.current)
-            .append('svg')
-            .attr('width', width)
-            .attr('height', height)
-            .attr('viewBox', [0, 0, width, height]);
-
-        // 그래프가 그려질 svg의 사이즈 설정
-        const graph = svg
-            .append('g')
-            .attr('width', graphWidth)
-            .attr('height', graphHeight)
-            // translate를 해서 그래프가 전체 캔버스의 중심에서 그려지도록 설정
-            .attr('transform', `translate(${ml}, ${mt})`);
+        // Canvas + Graph 설정
+        const { graph, tooltip } = createCanvas({
+            canvas: barChart.current,
+            width,
+            height,
+            margin: [mt, mr, mb, ml],
+            tooltipOptions: {
+                position: 'absolute',
+                'z-index': '10',
+                'min-width': '100px',
+                padding: '10px',
+                'border-radius': '4px',
+                color: '#fff',
+                background: '#252B2F',
+                visibility: 'hidden'
+            }
+        });
 
         // DATA Pre-processing
         const xLabels = data.map((item) => item.krName);
         const subGroup = ['x', 'y', 'z'];
         const yLabels = d3.extent(data, (d) => d.x + d.y + d.z);
 
-        // scale band -> not continuous data set
-        // domain -> 실제 데이터 []
-        // range -> 그래프에 표시될 데이터의 최소, 최대값
-        // padding -> 간격
-        const xScale = d3.scaleBand().domain(xLabels).range([0, graphWidth]).padding(0.25);
-
-        // https://observablehq.com/@d3/d3-scalelinear#cell-174
-        // Y축의 값들이 그래프의 끝에 너무 가깝지 않도록 마진을 추가
-        // scale.nice() -> 축의 값이 2,5,10의 배수로 나오도록 해줌
-        const yScale = d3.scaleLinear().domain([0, yLabels[1]]).nice().range([graphHeight, 0]);
-
         // X축, Y축 설정하기
-        const xAxisG = graph.append('g');
-        const xAxis = d3.axisBottom(xScale).tickSize(graphHeight).tickPadding(10);
-        const yAxisG = graph.append('g');
-        const yAxis = d3.axisLeft(yScale);
+        const { scale: xScale } = createAxis({
+            graph,
+            type: 'x',
+            domain: xLabels,
+            range: [0, graphWidth],
+            options: {
+                padding: 0.25,
+                tickSize: graphHeight,
+                tickPadding: 10
+            }
+        });
+        const { scale: yScale } = createAxis({
+            graph,
+            type: 'y',
+            domain: [0, yLabels[1]],
+            range: [graphHeight, 0],
+            options: {
+                graphWidth
+            }
+        });
+
+        // const xAxisG = graph.append('g');
+        //      scale band -> not continuous data set
+        //      domain -> 실제 데이터 []
+        //      range -> 그래프에 표시될 데이터의 최소, 최대값
+        //      padding -> 간격
+        // const xScale = d3.scaleBand().domain(xLabels).range([0, graphWidth]).padding(0.25);
+        // const xAxis = d3.axisBottom(xScale).tickSize(graphHeight).tickPadding(10);
+        //      X축 Styling
+        // xAxisG
+        //     .call(xAxis)
+        //     .call((g) => g.select('.domain').attr('stroke', 'transparent'))
+        //     .call((g) => g.selectAll('.tick').attr('stroke-opacity', 0.1))
+        //     .call((g) =>
+        //         g
+        //             .selectAll('.tick line')
+        //             .attr('transform', `translate(${xScale.bandwidth() - (xScale.step() - xScale.bandwidth())}, 0)`)
+        //     );
+
+        // const yAxisG = graph.append('g');
+        //      https://observablehq.com/@d3/d3-scalelinear#cell-174
+        //      Y축의 값들이 그래프의 끝에 너무 가깝지 않도록 마진을 추가
+        // scale.nice() -> 축의 값이 2,5,10의 배수로 나오도록 해줌
+        // const yScale = d3.scaleLinear().domain([0, yLabels[1]]).nice().range([graphHeight, 0]);
+        // const yAxis = d3.axisLeft(yScale);
+        //      Y축 Styling
+        // yAxisG
+        //     .call(yAxis)
+        //     .call((g) => g.select('.domain').attr('stroke', '#eeeeee'))
+        //     .call((g) => g.selectAll('.tick').attr('stroke-opacity', 0.1))
+        //     .call((g) => g.selectAll('.tick line').clone().attr('x2', graphWidth).attr('stroke-opacity', 0.1));
 
         // Sub Group별 색상 설정하기
-        const color = d3.scaleOrdinal().domain(subGroup).range(colors.slice(0, 3));
+        const { scale: color } = createAxis({ graph, type: 'color', domain: subGroup, range: colors.slice(0, 3) });
+        // const color = d3.scaleOrdinal().domain(subGroup).range(colors.slice(0, 3));
 
         // 중요!
         // Sub Group별로 stack을 만듬
         const stackedData = d3.stack().keys(subGroup)(data);
-
-        // X축 Styling
-        xAxisG
-            .call(xAxis)
-            .call((g) => g.select('.domain').attr('stroke', 'transparent'))
-            .call((g) => g.selectAll('.tick').attr('stroke-opacity', 0.1))
-            .call((g) =>
-                g
-                    .selectAll('.tick line')
-                    .attr('transform', `translate(${xScale.bandwidth() - (xScale.step() - xScale.bandwidth())}, 0)`)
-            );
-
-        // Y축 Styling
-        yAxisG
-            .call(yAxis)
-            .call((g) => g.select('.domain').attr('stroke', '#eeeeee'))
-            .call((g) => g.selectAll('.tick').attr('stroke-opacity', 0.1))
-            .call((g) => g.selectAll('.tick line').clone().attr('x2', graphWidth).attr('stroke-opacity', 0.1));
 
         /**
          * Referenced :
@@ -119,18 +142,18 @@ export default function StackedBarChart() {
          */
 
         // TOOLTIP Styling
-        const tooltip = d3
-            .select('body')
-            .append('div')
-            .attr('class', 'd3-tooltip')
-            .style('position', 'absolute')
-            .style('z-index', '10')
-            .style('minWidth', '100px')
-            .style('padding', '10px')
-            .style('border-radius', '4px')
-            .style('color', '#fff')
-            .style('background', '#252B2F')
-            .style('visibility', 'hidden');
+        // const tooltip = d3
+        //     .select('body')
+        //     .append('div')
+        //     .attr('class', 'd3-tooltip')
+        //     .style('position', 'absolute')
+        //     .style('z-index', '10')
+        //     .style('minWidth', '100px')
+        //     .style('padding', '10px')
+        //     .style('border-radius', '4px')
+        //     .style('color', '#fff')
+        //     .style('background', '#252B2F')
+        //     .style('visibility', 'hidden');
 
         // Stacked Bar Graph 그리기
         // 서브 그룹별로 stack을 만든 데이터를 넘겨줌
@@ -152,7 +175,6 @@ export default function StackedBarChart() {
             .on('mouseover', function (_event, d) {
                 const subgroupName = d3.select(this.parentNode).datum().key; // 현재 선택한 데이터의 서브 그룹명
                 const subgroupValue = d.data[subgroupName]; // 데이터 값
-
                 tooltip
                     .html(
                         `<div class="d3-tooltip-name">${d.data.krName}</div>
