@@ -7,6 +7,8 @@ let [mt, mr, mb, ml] = [50, 0, 50, 100];
 const graphWidth = width - mr - ml;
 const graphHeight = height - mt - mb;
 
+const colors = ['#FFDEE3', '#D8ECFF', '#FFF6E1', '#E0F3F2', '#E8DDFF', '#FFEDDD'];
+
 const data = [
     '전국',
     '서울',
@@ -87,7 +89,7 @@ export default function StackedBarChart() {
         const yAxis = d3.axisLeft(yScale);
 
         // Sub Group별 색상 설정하기
-        const color = d3.scaleOrdinal().domain(subGroup).range(['#000000', '#e41a1c', '#377eb8', '#4daf4a']);
+        const color = d3.scaleOrdinal().domain(subGroup).range(colors.slice(0, 3));
 
         // 중요!
         // Sub Group별로 stack을 만듬
@@ -111,11 +113,30 @@ export default function StackedBarChart() {
             .call((g) => g.selectAll('.tick').attr('stroke-opacity', 0.1))
             .call((g) => g.selectAll('.tick line').clone().attr('x2', graphWidth).attr('stroke-opacity', 0.1));
 
+        /**
+         * Referenced :
+         * https://d3-graph-gallery.com/graph/barplot_stacked_hover.html
+         */
+
+        // TOOLTIP Styling
+        const tooltip = d3
+            .select('body')
+            .append('div')
+            .attr('class', 'd3-tooltip')
+            .style('position', 'absolute')
+            .style('z-index', '10')
+            .style('minWidth', '100px')
+            .style('padding', '10px')
+            .style('border-radius', '4px')
+            .style('color', '#fff')
+            .style('background', '#252B2F')
+            .style('visibility', 'hidden');
+
         // Stacked Bar Graph 그리기
-        // Sub Group별로 stack을 만든 데이터를 넘겨줌
+        // 서브 그룹별로 stack을 만든 데이터를 넘겨줌
         const barG = graph.append('g').selectAll('g').data(stackedData);
 
-        // Sub Group마다 rect를 만듬
+        // 서브 그룹마다 rect를 만듬
         const bar = barG
             .join('g')
             .attr('fill', (d) => color(d.key))
@@ -125,49 +146,41 @@ export default function StackedBarChart() {
         // rect를 합치면서 하나의 bar 그리기
         bar.join('rect')
             .attr('x', (d) => xScale(d.data.krName))
-            .attr('y', (d) => yScale(d[1]))
+            .attr('y', yScale(0)) // 0
             .attr('width', xScale.bandwidth())
-            .attr('height', (d) => yScale(d[0]) - yScale(d[1]));
+            .attr('height', graphHeight - yScale(0)) // 0
+            .on('mouseover', function (_event, d) {
+                const subgroupName = d3.select(this.parentNode).datum().key; // 현재 선택한 데이터의 서브 그룹명
+                const subgroupValue = d.data[subgroupName]; // 데이터 값
 
-        // const bars = graph.selectAll('rect');
+                tooltip
+                    .html(
+                        `<div class="d3-tooltip-name">${d.data.krName}</div>
+                        <br/>
+                        <div class="d3-tooltip-label">
+                            <div class="d3-tooltip-color-${subgroupName}">
+                                <span></span>
+                            </div>
+                            <span class="d3-tooltip-name">${subgroupName}: </span>${subgroupValue.toLocaleString()}
+                        </div>`
+                    )
+                    .style('visibility', 'visible');
+            })
+            .on('mousemove', function (event, _d) {
+                tooltip.style('top', event.pageY - 10 + 'px').style('left', event.pageX + 10 + 'px');
+            })
+            .on('mouseleave', function (_event, d) {
+                tooltip.html(``).style('visibility', 'hidden');
+            });
 
-        // 0 -> 값만큼 height가 생기는 animation을 위해서 초기값을 0으로 설정
-        // bars.enter()
-        //     .append('rect')
-        //     .attr('width', xScale.bandwidth)
-        //     .attr('height', graphHeight - yScale(0))
-        //     .attr('fill', (d) => color(d.key))
-        //     // .attr('fill', 'rgba(54, 162, 235, 0.2)')
-        //     .attr('x', (d) => xScale(d.krName))
-        //     .attr('y', yScale(0))
-        //     // mouse over -> tooltip이 보이도록
-        //     .on('mouseover', function (e, data) {
-        //         tooltip
-        //             .html(
-        //                 `<div class="d3-tooltip-name">${
-        //                     data.krName
-        //                 }</div><br/><div class="d3-tooltip-label"><div class="d3-tooltip-color"><span></span></div><span class="d3-tooltip-name">totalCount:</span>${data.totalCount.toLocaleString()}</div>`
-        //             )
-        //             .style('visibility', 'visible');
-        //         d3.select(this).transition().attr('fill', 'rgba(54, 162, 235, 0.5)');
-        //     })
-        //     // mouse move
-        //     .on('mousemove', function (event) {
-        //         tooltip.style('top', event.pageY - 10 + 'px').style('left', event.pageX + 10 + 'px');
-        //     })
-        //     // mouse out ->
-        //     .on('mouseout', function () {
-        //         tooltip.html(``).style('visibility', 'hidden');
-        //         d3.select(this).transition().attr('fill', 'rgba(54, 162, 235, 0.2)');
-        //     });
-
-        // d3.selectAll('rect')
-        //     .transition()
-        //     .ease(d3.easeLinear)
-        //     .duration(500)
-        //     .attr('y', (d) => yScale(d.x + d.y + d.z))
-        //     .attr('height', (d) => graphHeight - yScale(d.x + d.y + d.z))
-        //     .delay((_, i) => i * 100);
+        // Animation Effect
+        d3.selectAll('rect')
+            .transition()
+            .ease(d3.easeLinear)
+            .duration(500)
+            .attr('y', (d) => yScale(d[1]))
+            .attr('height', (d) => yScale(d[0]) - yScale(d[1]))
+            .delay((_, i) => i * 10);
     }, []);
 
     return <div style={{ margin: 100, backgroundColor: '#fff' }} ref={barChart} id="canvas" />;

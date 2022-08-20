@@ -31,6 +31,57 @@ code {
     background-color: #fff;
 }
 
+.d3-tooltip-color-x {
+    width: 15px;
+    height: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 5px;
+    background-color: #fff;
+}
+
+.d3-tooltip-color-x span {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    background-color: #ffdee3;
+}
+
+.d3-tooltip-color-y {
+    width: 15px;
+    height: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 5px;
+    background-color: #fff;
+}
+
+.d3-tooltip-color-y span {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    background-color: #d8ecff;
+}
+
+.d3-tooltip-color-z {
+    width: 15px;
+    height: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 5px;
+    background-color: #fff;
+}
+
+.d3-tooltip-color-z span {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    background-color: #fff6e1;
+}
+
 .d3-tooltip-color span {
     display: inline-block;
     width: 14px;
