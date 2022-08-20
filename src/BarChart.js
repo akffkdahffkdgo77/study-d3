@@ -73,6 +73,7 @@ export default function BarChart() {
             type: 'x',
             domain: xLabels,
             range: [0, graphWidth],
+            draw: true,
             options: { padding: 0.25, tickSize: graphHeight, tickPadding: 10 }
         });
 
@@ -81,6 +82,7 @@ export default function BarChart() {
             type: 'y',
             domain: [0, d3.extent(data, (d) => d.totalCount)[1]],
             range: [graphHeight, 0],
+            draw: true,
             options: { graphWidth }
         });
 

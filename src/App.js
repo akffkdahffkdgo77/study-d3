@@ -1,5 +1,6 @@
 import BarChart from './BarChart';
 import BubbleChart from './BubbleChart';
+import GroupBarChart from './GroupedBarChart';
 import LineChart from './LineChart';
 import StackedBarChart from './StackedBarChart';
 
@@ -12,6 +13,7 @@ function App() {
             </h1>
             <BarChart />
             <StackedBarChart />
+            <GroupBarChart />
             <LineChart />
             <BubbleChart />
         </div>

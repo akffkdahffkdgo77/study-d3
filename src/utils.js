@@ -36,7 +36,7 @@ export const createCanvas = ({ canvas, width, height, margin: [mt, mr, mb, ml], 
     return { graph, tooltip };
 };
 
-export const createAxis = ({ graph, type, domain, range, options }) => {
+export const createAxis = ({ graph, draw, type, domain, range, options }) => {
     const axisG = graph.append('g');
     let scale = null;
     let axis = null;
@@ -48,7 +48,12 @@ export const createAxis = ({ graph, type, domain, range, options }) => {
          *  range -> 그래프에 표시될 데이터의 최소, 최대값
          *  padding -> 간격
          */
-        scale = d3.scaleBand().domain(domain).range(range).padding(options.padding);
+        scale = d3
+            .scaleBand()
+            .domain(domain)
+            .range(range)
+            .paddingOuter(options.padding / 2)
+            .paddingInner(options.padding);
 
         // X축이 그래프의 하단에 그려지도록
         axis = d3
@@ -59,15 +64,18 @@ export const createAxis = ({ graph, type, domain, range, options }) => {
             .tickPadding(options.tickPadding);
 
         // X축 Styling
-        axisG
-            .call(axis)
-            .call((g) => g.select('.domain').attr('stroke', 'transparent'))
-            .call((g) => g.selectAll('.tick').attr('stroke-opacity', 0.1))
-            .call((g) =>
-                g
-                    .selectAll('.tick line')
-                    .attr('transform', `translate(${scale.bandwidth() - (scale.step() - scale.bandwidth())}, 0)`)
-            );
+        if (draw) {
+            console.log(scale.bandwidth(), scale.step(), scale.bandwidth() - (scale.step() - scale.bandwidth()));
+            axisG
+                .call(axis)
+                .call((g) => g.select('.domain').attr('stroke', 'transparent'))
+                .call((g) => g.selectAll('.tick').attr('stroke-opacity', 0.1))
+                .call((g) =>
+                    g
+                        .selectAll('.tick line')
+                        .attr('transform', `translate(${scale.bandwidth() - (scale.step() - scale.bandwidth())}, 0)`)
+                );
+        }
     } else if (type === 'y') {
         /**
          *  https://observablehq.com/@d3/d3-scalelinear#cell-174
@@ -79,12 +87,16 @@ export const createAxis = ({ graph, type, domain, range, options }) => {
         // Y축이 그래프의 왼쪽에서 그려지도록
         axis = d3.axisLeft(scale);
 
-        // Y축 Styling
-        axisG
-            .call(axis)
-            .call((g) => g.select('.domain').attr('stroke', '#eeeeee'))
-            .call((g) => g.selectAll('.tick').attr('stroke-opacity', 0.1))
-            .call((g) => g.selectAll('.tick line').clone().attr('x2', options.graphWidth).attr('stroke-opacity', 0.1));
+        if (draw) {
+            // Y축 Styling
+            axisG
+                .call(axis)
+                .call((g) => g.select('.domain').attr('stroke', '#eeeeee'))
+                .call((g) => g.selectAll('.tick').attr('stroke-opacity', 0.1))
+                .call((g) =>
+                    g.selectAll('.tick line').clone().attr('x2', options.graphWidth).attr('stroke-opacity', 0.1)
+                );
+        }
     } else if (type === 'color') {
         // 색상 설정
         scale = d3.scaleOrdinal().domain(domain).range(range);
@@ -94,7 +106,6 @@ export const createAxis = ({ graph, type, domain, range, options }) => {
 };
 
 export const createBar = ({ graph, x, y, color, data, options, mouseOver, mouseMove, mouseLeave }) => {
-    console.log(data);
     const bars = graph.selectAll('rect').data(data);
     bars.enter()
         .append('rect')
@@ -130,6 +141,43 @@ export const createStackedBar = ({ graph, x, y, color, data, options, mouseOver,
         .attr('y', y) // 0
         .attr('width', options.width)
         .attr('height', options.height)
+        .on('mouseover', mouseOver)
+        .on('mousemove', mouseMove)
+        .on('mouseleave', mouseLeave);
+};
+
+export const createGroupedBar = ({
+    graph,
+    x,
+    xSubGroup,
+    y,
+    subGroup,
+    data,
+    color,
+    options,
+    mouseOver,
+    mouseMove,
+    mouseLeave
+}) => {
+    // Stacked Bar Graph 그리기
+    const barG = graph.append('g').selectAll('g').data(data);
+
+    // 서브 그룹마다 rect를 만듬
+    const bar = barG
+        .join('g')
+        .attr('transform', (d) => `translate(${x(d.krName)}, 0)`)
+        .selectAll('rect')
+        .data(function (d) {
+            return subGroup.map((key) => ({ key, value: d[key] }));
+        });
+
+    // rect를 합치면서 하나의 bar 그리기
+    bar.join('rect')
+        .attr('x', xSubGroup)
+        .attr('y', y)
+        .attr('width', options.width)
+        .attr('height', options.height)
+        .attr('fill', color)
         .on('mouseover', mouseOver)
         .on('mousemove', mouseMove)
         .on('mouseleave', mouseLeave);

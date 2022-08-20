@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import { animateBar, createAxis, createCanvas, createStackedBar } from './utils';
+import { animateBar, createAxis, createCanvas, createGroupedBar } from './utils';
 
-const width = 800;
+const width = 1200;
 const height = 800;
 const [mt, mr, mb, ml] = [50, 0, 50, 100];
 
@@ -16,20 +16,20 @@ const data = [
     '서울',
     '부산',
     '대구',
-    '인천',
-    '광주',
-    '대전',
-    '울산',
-    '세종',
-    '경기',
-    '강원',
-    '충북',
-    '충남',
-    '전북',
-    '전남',
-    '경북',
-    '경남',
-    '제주'
+    '인천'
+    // '광주',
+    // '대전',
+    // '울산',
+    // '세종',
+    // '경기',
+    // '강원',
+    // '충북',
+    // '충남',
+    // '전북',
+    // '전남',
+    // '경북',
+    // '경남',
+    // '제주'
 ].map((krName) => ({
     krName,
     x: Math.floor(Math.random() * (1000000 - 100)) + 100,
@@ -50,10 +50,10 @@ const tooltipOptions = {
 
 /**
  *  References :
- *  https://d3-graph-gallery.com/graph/barplot_stacked_basicWide.html
+ *  https://d3-graph-gallery.com/graph/barplot_grouped_basicWide.html
  *  https://d3-graph-gallery.com/graph/barplot_stacked_hover.html
  */
-export default function StackedBarChart() {
+export default function GroupBarChart() {
     const barChart = useRef(null);
     const rendered = useRef(true);
 
@@ -96,38 +96,45 @@ export default function StackedBarChart() {
             options: { graphWidth }
         });
 
+        const { scale: xSubGroupScale } = createAxis({
+            graph,
+            type: 'x',
+            domain: subGroup,
+            range: [0, xScale.bandwidth()],
+            draw: false,
+            options: { padding: 0.5, tickSize: 0, tickPadding: 0 }
+        });
+
         // Sub Group별 색상 설정하기
         const { scale: color } = createAxis({ graph, type: 'color', domain: subGroup, range: colors.slice(0, 3) });
 
-        // Sub Group별로 stack을 만듬
-        const stackedData = d3.stack().keys(subGroup)(data);
-
-        // Stacked Bar Graph 그리기
-        createStackedBar({
+        // Grouped Bar Graph 그리기
+        createGroupedBar({
             graph,
-            data: stackedData,
-            x: (d) => xScale(d.data.krName),
+            data: data,
+            x: xScale,
+            xSubGroup: (d) => xSubGroupScale(d.key),
             y: yScale(0),
+            subGroup,
             color: (d) => color(d.key),
-            options: { width: xScale.bandwidth(), height: graphHeight - yScale(0) },
+            options: { width: xSubGroupScale.bandwidth(), height: graphHeight - yScale(0) },
             mouseOver,
             mouseMove,
             mouseLeave
         });
 
         function mouseOver(_event, d) {
-            const subgroupName = d3.select(this.parentNode).datum().key; // 현재 선택한 데이터의 서브 그룹명
-            const subgroupValue = d.data[subgroupName]; // 데이터 값
+            const category = d3.select(this.parentNode).datum(); // 현재 선택한 데이터의 서브 그룹명
             tooltip
                 .html(
-                    `<div class="d3-tooltip-name">${d.data.krName}</div>
-                        <br/>
-                        <div class="d3-tooltip-label">
-                            <div class="d3-tooltip-color-${subgroupName}">
-                                <span></span>
-                            </div>
-                            <span class="d3-tooltip-name">${subgroupName}: </span>${subgroupValue.toLocaleString()}
-                        </div>`
+                    `<div class="d3-tooltip-name">${category.krName}</div>
+                    <br/>
+                    <div class="d3-tooltip-label">
+                        <div class="d3-tooltip-color-${d.key}">
+                            <span></span>
+                        </div>
+                        <span class="d3-tooltip-name">${d.key}: </span>${d.value.toLocaleString()}
+                    </div>`
                 )
                 .style('visibility', 'visible');
         }
@@ -142,10 +149,10 @@ export default function StackedBarChart() {
 
         animateBar({
             graph: barChart.current,
-            y: (d) => yScale(d[1]),
-            height: (d) => yScale(d[0]) - yScale(d[1])
+            y: (d) => yScale(d.value),
+            height: (d) => graphHeight - yScale(d.value)
         });
     }, []);
 
-    return <div style={{ margin: 100, backgroundColor: '#fff' }} ref={barChart} id="stacked-bar-chart-canvas" />;
+    return <div style={{ margin: 100, backgroundColor: '#fff' }} ref={barChart} id="grouped-bar-chart-canvas" />;
 }
