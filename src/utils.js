@@ -4,7 +4,6 @@ import * as d3 from 'd3';
  *  Referenced :
  *  https://d3-graph-gallery.com/graph/barplot_stacked_hover.html
  */
-
 export const createCanvas = ({ canvas, width, height, margin: [mt, mr, mb, ml], tooltipOptions }) => {
     const graphWidth = width - mr - ml;
     const graphHeight = height - mt - mb;
@@ -26,7 +25,12 @@ export const createCanvas = ({ canvas, width, height, margin: [mt, mr, mb, ml], 
         .attr('transform', `translate(${ml}, ${mt})`);
 
     // 툴팁 설정
-    const tooltip = d3.select('body').append('div').attr('class', 'd3-tooltip');
+    let tooltip = null;
+    if ([...d3.select('.d3-tooltip')].length > 0) {
+        tooltip = d3.select('.d3-tooltip');
+    } else {
+        tooltip = d3.select('#root').append('div').attr('class', 'd3-tooltip');
+    }
     Object.keys(tooltipOptions).forEach((key) => tooltip.style(key, tooltipOptions[key]));
 
     return { graph, tooltip };
@@ -87,4 +91,57 @@ export const createAxis = ({ graph, type, domain, range, options }) => {
     }
 
     return { scale, axis };
+};
+
+export const createBar = ({ graph, x, y, color, data, options, mouseOver, mouseMove, mouseLeave }) => {
+    console.log(data);
+    const bars = graph.selectAll('rect').data(data);
+    bars.enter()
+        .append('rect')
+        .attr('x', x)
+        .attr('y', y)
+        .attr('width', options.width)
+        // 0 -> 값만큼 height가 생기는 animation을 위해서 초기값을 0으로 설정
+        .attr('height', options.height)
+        .attr('fill', color)
+        // mouse over -> tooltip이 보이도록
+        .on('mouseover', mouseOver)
+        // mouse move
+        .on('mousemove', mouseMove)
+        // mouse leave -> tooltip이 보이지 않도록
+        .on('mouseleave', mouseLeave);
+};
+
+export const createStackedBar = ({ graph, x, y, color, data, options, mouseOver, mouseMove, mouseLeave }) => {
+    // Stacked Bar Graph 그리기
+    // 서브 그룹별로 stack을 만든 데이터를 넘겨줌
+    const barG = graph.append('g').selectAll('g').data(data);
+
+    // 서브 그룹마다 rect를 만듬
+    const bar = barG
+        .join('g')
+        .attr('fill', color)
+        .selectAll('rect')
+        .data((d) => d);
+
+    // rect를 합치면서 하나의 bar 그리기
+    bar.join('rect')
+        .attr('x', x)
+        .attr('y', y) // 0
+        .attr('width', options.width)
+        .attr('height', options.height)
+        .on('mouseover', mouseOver)
+        .on('mousemove', mouseMove)
+        .on('mouseleave', mouseLeave);
+};
+
+export const animateBar = ({ graph, y, height }) => {
+    d3.select(graph)
+        .selectAll('rect')
+        .transition()
+        .ease(d3.easeLinear)
+        .duration(500)
+        .attr('y', y)
+        .attr('height', height)
+        .delay((_, i) => i * 10);
 };
