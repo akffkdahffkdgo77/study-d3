@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import { animateBar, createAxis, createBar, createCanvas } from './utils';
+import { animateBar, createAxis, createBar, createCanvas } from '../utils';
 
 export default function BarChart({ data, options }) {
     const barChart = useRef(null);

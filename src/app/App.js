@@ -1,11 +1,11 @@
-import BarChart from './BarChart';
-import BubbleChart from './BubbleChart';
-import { barData, barOptions } from "./constants/bar";
-import { groupedData, groupedOptions } from "./constants/groupedBar";
-import { stackedData, stackedOptions } from "./constants/stackedBar";
-import GroupBarChart from './GroupedBarChart';
-import LineChart from './LineChart';
-import StackedBarChart from './StackedBarChart';
+import BarChart from '../components/BarChart';
+import BubbleChart from '../components/BubbleChart';
+import GroupBarChart from '../components/GroupedBarChart';
+import LineChart from '../components/LineChart';
+import StackedBarChart from '../components/StackedBarChart';
+import { barData, barOptions } from "../constants/bar";
+import { groupedData, groupedOptions } from "../constants/groupedBar";
+import { stackedData, stackedOptions } from "../constants/stackedBar";
 
 // https://github.com/d3/d3/blob/main/API.md#d3-api-reference
 function App() {
