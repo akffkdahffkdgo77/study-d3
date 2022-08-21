@@ -45,7 +45,7 @@ code {
     display: inline-block;
     width: 14px;
     height: 14px;
-    background-color: #ffdee3;
+    background-color: #d8ecff;
 }
 
 .d3-tooltip-color-y {
@@ -62,7 +62,7 @@ code {
     display: inline-block;
     width: 14px;
     height: 14px;
-    background-color: #d8ecff;
+    background-color: #ffdee3;
 }
 
 .d3-tooltip-color-z {
@@ -91,4 +91,8 @@ code {
 
 .bubbles:hover {
     stroke: black;
+}
+
+svg {
+    max-width: 100%;
 }

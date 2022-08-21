@@ -2,58 +2,12 @@ import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import { animateBar, createAxis, createCanvas, createStackedBar } from './utils';
 
-const width = 800;
-const height = 800;
-const [mt, mr, mb, ml] = [50, 0, 50, 100];
-
-const graphWidth = width - mr - ml;
-const graphHeight = height - mt - mb;
-
-const colors = ['#FFDEE3', '#D8ECFF', '#FFF6E1', '#E0F3F2', '#E8DDFF', '#FFEDDD'];
-
-const data = [
-    '전국',
-    '서울',
-    '부산',
-    '대구',
-    '인천',
-    '광주',
-    '대전',
-    '울산',
-    '세종',
-    '경기',
-    '강원',
-    '충북',
-    '충남',
-    '전북',
-    '전남',
-    '경북',
-    '경남',
-    '제주'
-].map((krName) => ({
-    krName,
-    x: Math.floor(Math.random() * (1000000 - 100)) + 100,
-    y: Math.floor(Math.random() * (1000000 - 100)) + 100,
-    z: Math.floor(Math.random() * (1000000 - 100)) + 100
-}));
-
-const tooltipOptions = {
-    position: 'absolute',
-    'z-index': '10',
-    'min-width': '100px',
-    padding: '10px',
-    'border-radius': '4px',
-    color: '#fff',
-    background: '#252B2F',
-    visibility: 'hidden'
-};
-
 /**
  *  References :
  *  https://d3-graph-gallery.com/graph/barplot_stacked_basicWide.html
  *  https://d3-graph-gallery.com/graph/barplot_stacked_hover.html
  */
-export default function StackedBarChart() {
+export default function StackedBarChart({ data, options }) {
     const barChart = useRef(null);
     const rendered = useRef(true);
 
@@ -64,18 +18,17 @@ export default function StackedBarChart() {
 
         rendered.current = false;
 
-        // DATA Pre-processing
-        const subGroup = ['x', 'y', 'z'];
-        const xLabels = data.map((item) => item.krName);
-        const yLabels = d3.extent(data, (d) => d.x + d.y + d.z);
+        const { xLabels, yLabels, category, datasets } = data;
+        const graphWidth = barChart.current.clientWidth - options.dimensions.margin[1] - options.dimensions.margin[3];
+        const graphHeight = options.dimensions.height - options.dimensions.margin[0] - options.dimensions.margin[2];
 
         // Canvas + Graph 설정
         const { graph, tooltip } = createCanvas({
             canvas: barChart.current,
-            width,
-            height,
-            margin: [mt, mr, mb, ml],
-            tooltipOptions
+            width: barChart.current.clientWidth + Math.floor(options.dimensions.margin[3] / 2),
+            height: options.dimensions.height,
+            margin: options.dimensions.margin,
+            tooltipOptions: options.tooltip
         });
 
         // X축, Y축 설정하기
@@ -85,7 +38,11 @@ export default function StackedBarChart() {
             domain: xLabels,
             range: [0, graphWidth],
             draw: true,
-            options: { padding: 0.25, tickSize: graphHeight, tickPadding: 10 }
+            options: {
+                padding: 0.25,
+                tickSize: graphHeight,
+                tickPadding: 10
+            }
         });
         const { scale: yScale } = createAxis({
             graph,
@@ -97,10 +54,15 @@ export default function StackedBarChart() {
         });
 
         // Sub Group별 색상 설정하기
-        const { scale: color } = createAxis({ graph, type: 'color', domain: subGroup, range: colors.slice(0, 3) });
+        const { scale: color } = createAxis({
+            graph,
+            type: 'color',
+            domain: category,
+            range: options.colors
+        });
 
         // Sub Group별로 stack을 만듬
-        const stackedData = d3.stack().keys(subGroup)(data);
+        const stackedData = d3.stack().keys(category)(datasets);
 
         // Stacked Bar Graph 그리기
         createStackedBar({
@@ -116,17 +78,17 @@ export default function StackedBarChart() {
         });
 
         function mouseOver(_event, d) {
-            const subgroupName = d3.select(this.parentNode).datum().key; // 현재 선택한 데이터의 서브 그룹명
-            const subgroupValue = d.data[subgroupName]; // 데이터 값
+            const categoryName = d3.select(this.parentNode).datum().key; // 현재 선택한 데이터의 서브 그룹명
+            const categoryValue = d.data[categoryName]; // 데이터 값
             tooltip
                 .html(
                     `<div class="d3-tooltip-name">${d.data.krName}</div>
                         <br/>
                         <div class="d3-tooltip-label">
-                            <div class="d3-tooltip-color-${subgroupName}">
+                            <div class="d3-tooltip-color-${categoryName}">
                                 <span></span>
                             </div>
-                            <span class="d3-tooltip-name">${subgroupName}: </span>${subgroupValue.toLocaleString()}
+                            <span class="d3-tooltip-name">${categoryName}: </span>${categoryValue.toLocaleString()}
                         </div>`
                 )
                 .style('visibility', 'visible');
@@ -136,7 +98,7 @@ export default function StackedBarChart() {
             tooltip.style('top', event.pageY - 10 + 'px').style('left', event.pageX + 10 + 'px');
         }
 
-        function mouseLeave(_event, d) {
+        function mouseLeave(_event, _d) {
             tooltip.html(``).style('visibility', 'hidden');
         }
 
@@ -145,7 +107,7 @@ export default function StackedBarChart() {
             y: (d) => yScale(d[1]),
             height: (d) => yScale(d[0]) - yScale(d[1])
         });
-    }, []);
+    }, [data, options]);
 
-    return <div style={{ margin: 100, backgroundColor: '#fff' }} ref={barChart} id="stacked-bar-chart-canvas" />;
+    return <div style={{ backgroundColor: '#fff', borderRadius: 4 }} ref={barChart} id="stacked-bar-chart-canvas" />;
 }
