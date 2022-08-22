@@ -215,10 +215,7 @@ export default function LineChart() {
         const line = d3
             .line()
             .defined((d) => !isNaN(d.value))
-            .x((d, i) => {
-                console.log(xScale(i));
-                return xScale(i);
-            })
+            .x((_d, i) => xScale(i))
             .y((d) => yScale(d.value));
 
         graph
@@ -251,5 +248,5 @@ export default function LineChart() {
         }
     }, []);
 
-    return <div style={{ margin: 100, backgroundColor: '#fff' }} ref={lineChart} id="line-chart-canvas" />;
+    return <div style={{ backgroundColor: '#fff', borderRadius: 4 }} ref={lineChart} id="line-chart-canvas" />;
 }

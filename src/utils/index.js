@@ -65,7 +65,6 @@ export const createAxis = ({ graph, draw, type, domain, range, options }) => {
 
         // X축 Styling
         if (draw) {
-            console.log(scale.bandwidth(), scale.step(), scale.bandwidth() - (scale.step() - scale.bandwidth()));
             axisG
                 .call(axis)
                 .call((g) => g.select('.domain').attr('stroke', 'transparent'))
@@ -151,7 +150,7 @@ export const createGroupedBar = ({
     x,
     xSubGroup,
     y,
-    subGroup,
+    category,
     data,
     color,
     options,
@@ -168,7 +167,7 @@ export const createGroupedBar = ({
         .attr('transform', (d) => `translate(${x(d.krName)}, 0)`)
         .selectAll('rect')
         .data(function (d) {
-            return subGroup.map((key) => ({ key, value: d[key] }));
+            return category.map((key) => ({ key, value: d[key] }));
         });
 
     // rect를 합치면서 하나의 bar 그리기

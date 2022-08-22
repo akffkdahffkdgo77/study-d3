@@ -40,7 +40,6 @@ const tooltipOptions = {
 
 const colors = ['#D8ECFF', '#FFDEE3', '#FFF6E1', '#E0F3F2', '#E8DDFF', '#FFEDDD'];
 
-
 export const groupedData = {
     category: ['x', 'y', 'z'],
     xLabels: groupedDummy.map((item) => item.krName),
