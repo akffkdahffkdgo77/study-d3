@@ -2,10 +2,11 @@ import BarChart from '../components/BarChart';
 import BubbleChart from '../components/BubbleChart';
 import GroupBarChart from '../components/GroupedBarChart';
 import LineChart from '../components/LineChart';
+import MultiLineChart from '../components/MultiLineChart';
 import StackedBarChart from '../components/StackedBarChart';
-import { barData, barOptions } from "../constants/bar";
-import { groupedData, groupedOptions } from "../constants/groupedBar";
-import { stackedData, stackedOptions } from "../constants/stackedBar";
+import { barData, barOptions } from '../constants/bar';
+import { groupedData, groupedOptions } from '../constants/groupedBar';
+import { stackedData, stackedOptions } from '../constants/stackedBar';
 
 // https://github.com/d3/d3/blob/main/API.md#d3-api-reference
 function App() {
@@ -20,12 +21,11 @@ function App() {
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', columnGap: 50, padding: 50 }}>
                 <GroupBarChart data={groupedData} options={groupedOptions} />
+                <BubbleChart />
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', columnGap: 50, padding: 50 }}>
                 <LineChart />
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', columnGap: 50, padding: 50 }}>
-                <BubbleChart />
+                <MultiLineChart />
             </div>
         </div>
     );
