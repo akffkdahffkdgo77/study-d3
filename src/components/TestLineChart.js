@@ -152,5 +152,17 @@ export default function TestLineChart() {
         }
     }, []);
 
-    return <div style={{ margin: 100, backgroundColor: '#fff' }} ref={lineChart} id="line-chart-canvas" />;
+    return (
+        <div
+            style={{
+                display: 'flex',
+                alitngnItems: 'center',
+                justifyContent: 'center',
+                margin: 100,
+                backgroundColor: '#fff'
+            }}
+            ref={lineChart}
+            id="line-chart-canvas"
+        />
+    );
 }

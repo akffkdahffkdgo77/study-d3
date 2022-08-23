@@ -139,5 +139,17 @@ export default function BubbleChart() {
             .on('mouseleave', onLeave);
     }, []);
 
-    return <div style={{ backgroundColor: '#fff', borderRadius: 4 }} ref={bubbleChart} id="bubble-chart-canvas" />;
+    return (
+        <div
+            style={{
+                display: 'flex',
+                alitngnItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#fff',
+                borderRadius: 4
+            }}
+            ref={bubbleChart}
+            id="bubble-chart-canvas"
+        />
+    );
 }

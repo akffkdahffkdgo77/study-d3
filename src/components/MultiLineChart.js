@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
-const width = 1000;
+const width = 800;
 const height = 800;
-let [mt, mr, mb, ml] = [50, 50, 50, 50];
+let [mt, mr, mb, ml] = [50, 20, 50, 50];
 const graphWidth = width - mr - ml;
 const graphHeight = height - mt - mb;
 
@@ -209,5 +209,17 @@ export default function MultiLineChart() {
         }
     }, []);
 
-    return <div style={{ backgroundColor: '#fff', borderRadius: 4 }} ref={lineChart} id="multi-line-chart-canvas" />;
+    return (
+        <div
+            style={{
+                display: 'flex',
+                alitngnItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#fff',
+                borderRadius: 4
+            }}
+            ref={lineChart}
+            id="multi-line-chart-canvas"
+        />
+    );
 }

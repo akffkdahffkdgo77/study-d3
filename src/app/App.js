@@ -12,7 +12,7 @@ import { stackedData, stackedOptions } from '../constants/stackedBar';
 function App() {
     return (
         <div style={{ backgroundColor: '#000', minHeight: '100vh', paddingTop: 100, paddingBottom: 100 }}>
-            <h1 style={{ width: '100%', textAlign: 'center', color: '#fff', marginTop: 0 }}>
+            <h1 style={{  width: '100%', textAlign: 'center', color: '#fff', marginTop: 0 }}>
                 Common Chart Clone Coding
             </h1>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', columnGap: 50, padding: 50 }}>

@@ -23,9 +23,9 @@ const tooltipOptions = {
     position: 'absolute',
     top: 0,
     'z-index': 10,
-    'min-width': 100,
-    padding: 10,
-    'border-radius': 4,
+    'min-width': '100px',
+    padding: '10px',
+    'border-radius': '4px',
     color: '#fff',
     background: '#252B2F',
     visibility: 'hidden'

@@ -107,5 +107,17 @@ export default function GroupBarChart({ data, options }) {
         });
     }, [data, options]);
 
-    return <div style={{ backgroundColor: '#fff', borderRadius: 4 }} ref={barChart} id="grouped-bar-chart-canvas" />;
+    return (
+        <div
+            style={{
+                display: 'flex',
+                alitngnItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#fff',
+                borderRadius: 4
+            }}
+            ref={barChart}
+            id="grouped-bar-chart-canvas"
+        />
+    );
 }
