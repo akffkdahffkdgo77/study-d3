@@ -34,7 +34,7 @@ export default function StackedBarChart({ data, options }) {
         // X축, Y축 설정하기
         const { scale: xScale } = createAxis({
             graph,
-            type: 'x',
+            type: 'band',
             domain: xLabels,
             range: [0, graphWidth],
             draw: true,
@@ -46,7 +46,7 @@ export default function StackedBarChart({ data, options }) {
         });
         const { scale: yScale } = createAxis({
             graph,
-            type: 'y',
+            type: 'linear',
             domain: [0, yLabels[1]],
             range: [graphHeight, 0],
             draw: true,

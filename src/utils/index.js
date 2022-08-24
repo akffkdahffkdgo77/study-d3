@@ -36,12 +36,12 @@ export const createCanvas = ({ canvas, width, height, margin: [mt, mr, mb, ml], 
     return { graph, tooltip };
 };
 
-export const createAxis = ({ graph, draw, type, domain, range, options }) => {
+export const createAxis = ({ graph, draw, type, axisType = '', domain, range, options }) => {
     const axisG = graph.append('g');
     let scale = null;
     let axis = null;
 
-    if (type === 'x') {
+    if (type === 'band') {
         /**
          *  scale band -> not continuous data set
          *  domain -> 실제 데이터 []
@@ -75,7 +75,7 @@ export const createAxis = ({ graph, draw, type, domain, range, options }) => {
                         .attr('transform', `translate(${scale.bandwidth() - (scale.step() - scale.bandwidth())}, 0)`)
                 );
         }
-    } else if (type === 'y') {
+    } else if (type === 'linear') {
         /**
          *  https://observablehq.com/@d3/d3-scalelinear#cell-174
          *  Y축의 값들이 그래프의 끝에 너무 가깝지 않도록 마진을 추가
@@ -83,8 +83,24 @@ export const createAxis = ({ graph, draw, type, domain, range, options }) => {
          */
         scale = d3.scaleLinear().domain(domain).nice().range(range);
 
-        // Y축이 그래프의 왼쪽에서 그려지도록
-        axis = d3.axisLeft(scale);
+        if (axisType === 'x') {
+            // // x축 생성하기
+            axis = d3
+                // x축은 그래프 하단에
+                .axisBottom(scale)
+                .ticks(options.ticks)
+                .tickSize(options.tickSize)
+                // x축 label과 x축 사이의 간격 설정
+                .tickPadding(options.tickPadding);
+        } else {
+            // Y축이 그래프의 왼쪽에서 그려지도록
+            axis = d3
+                .axisLeft(scale)
+                .ticks(options.ticks || 10)
+                .tickSize(options.tickSize)
+                // x축 label과 x축 사이의 간격 설정
+                .tickPadding(options.tickPadding);
+        }
 
         if (draw) {
             // Y축 Styling
