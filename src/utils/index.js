@@ -59,7 +59,7 @@ export const createAxis = ({ graph, draw, type, axisType = '', domain, range, op
         axis = d3
             .axisBottom(scale)
             // grid line 그리기
-            .tickSize(options.tickSize)
+            .tickSize(options.tickSize + 6)
             // x축 label과 x축 사이의 간격 설정
             .tickPadding(options.tickPadding);
 
@@ -89,28 +89,30 @@ export const createAxis = ({ graph, draw, type, axisType = '', domain, range, op
                 // x축은 그래프 하단에
                 .axisBottom(scale)
                 .ticks(options.ticks)
-                .tickSize(options.tickSize)
+                .tickSize(options.tickSize + 6)
                 // x축 label과 x축 사이의 간격 설정
                 .tickPadding(options.tickPadding);
         } else {
             // Y축이 그래프의 왼쪽에서 그려지도록
-            axis = d3
-                .axisLeft(scale)
-                .ticks(options.ticks || 10)
-                .tickSize(options.tickSize)
-                // x축 label과 x축 사이의 간격 설정
-                .tickPadding(options.tickPadding);
+            axis = d3.axisLeft(scale);
         }
 
         if (draw) {
-            // Y축 Styling
-            axisG
-                .call(axis)
-                .call((g) => g.select('.domain').attr('stroke', '#eeeeee'))
-                .call((g) => g.selectAll('.tick').attr('stroke-opacity', 0.1))
-                .call((g) =>
-                    g.selectAll('.tick line').clone().attr('x2', options.graphWidth).attr('stroke-opacity', 0.1)
-                );
+            if (axisType === 'y') {
+                // Y축 Styling
+                axisG
+                    .call(axis)
+                    .call((g) => g.select('.domain').attr('stroke', '#eeeeee'))
+                    .call((g) => g.selectAll('.tick').attr('stroke-opacity', 0.1))
+                    .call((g) =>
+                        g.selectAll('.tick line').clone().attr('x2', options.graphWidth).attr('stroke-opacity', 0.1)
+                    );
+            } else {
+                axisG
+                    .call(axis)
+                    .call((g) => g.select('.domain').attr('stroke', '#eeeeee'))
+                    .call((g) => g.selectAll('.tick').attr('stroke-opacity', 0.1));
+            }
         }
     } else if (type === 'color') {
         // 색상 설정
@@ -207,4 +209,33 @@ export const animateBar = ({ graph, y, height }) => {
         .attr('y', y)
         .attr('height', height)
         .delay((_, i) => i * 10);
+};
+
+export const createLines = ({ graph, data, x, y, d, fill, onMouseOver, onMouseMove, onMouseLeave, transition }) => {
+    graph
+        .selectAll('lines')
+        .data(data)
+        .join('path')
+        .attr('d', d)
+        .attr('stroke', fill)
+        .style('stroke-width', 4)
+        .style('fill', 'none')
+        // .attr('transform', `translate(${options.dimensions.margin[3]}, ${options.dimensions.margin[0]})`)
+        .call(transition);
+
+    // Point 추가가 추가될 group을 category별로 생성
+    const dotG = graph.selectAll('dots').data(data).join('g').style('fill', fill);
+
+    // 생성한 group마다 circle 그려주기
+    dotG.selectAll('points')
+        .data((d) => d.values)
+        .join('circle')
+        .attr('cx', x)
+        .attr('cy', y)
+        .attr('r', 5)
+        .attr('stroke', 'white')
+        // .attr('transform', `translate(${options.dimensions.margin[3]}, ${options.dimensions.margin[0]})`)
+        .on('mouseover', onMouseOver)
+        .on('mousemove', onMouseMove)
+        .on('mouseleave', onMouseLeave);
 };

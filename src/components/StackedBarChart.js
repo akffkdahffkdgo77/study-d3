@@ -47,6 +47,7 @@ export default function StackedBarChart({ data, options }) {
         const { scale: yScale } = createAxis({
             graph,
             type: 'linear',
+            axisType: 'y',
             domain: [0, yLabels[1]],
             range: [graphHeight, 0],
             draw: true,

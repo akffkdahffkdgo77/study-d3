@@ -43,6 +43,7 @@ export default function BarChart({ data, options }) {
         const { scale: yScale } = createAxis({
             graph,
             type: 'linear',
+            axisType: 'y',
             domain: [0, d3.extent(datasets, (d) => d.totalCount)[1]],
             range: [graphHeight, 0],
             draw: true,

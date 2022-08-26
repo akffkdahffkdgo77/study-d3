@@ -5,8 +5,6 @@ const lineDummy = Array.from(Array(21)).map((_, i) => ({
     z: Math.floor(Math.random() * (1500 - 1000)) + 1000
 }));
 
-
-
 const tooltipOptions = {
     position: 'absolute',
     top: 0,
@@ -25,8 +23,7 @@ export const multiLineData = {
     xLabels: [],
     yLabels: [],
     category: ['x', 'y', 'z'],
-    datasets: lineDummy,
-
+    datasets: lineDummy
 };
 
 export const multiLineOptions = {
@@ -34,6 +31,6 @@ export const multiLineOptions = {
     tooltip: tooltipOptions,
     dimensions: {
         height: 600,
-        margin: [50, 20, 50, 50] // [mt, mr, mb, ml]
+        margin: [50, 20, 50, 70] // [mt, mr, mb, ml]
     }
 };
