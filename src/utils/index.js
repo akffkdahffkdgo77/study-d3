@@ -1,9 +1,136 @@
+/* eslint-disable no-sparse-arrays */
 import * as d3 from 'd3';
 
 /**
  *  Referenced :
  *  https://d3-graph-gallery.com/graph/barplot_stacked_hover.html
  */
+
+export function createLineCanvas({ canvas, width, height }) {
+    // 기본 canvas 설정
+    const svg = d3
+        .select(canvas)
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height)
+        .attr('viewBox', [0, 0, width, height])
+        .attr('style', 'max-width: 100%; height: auto; height: intrinsic;')
+        .attr('font-family', 'sans-serif')
+        .attr('font-size', 10)
+        .style('-webkit-tap-highlight-color', 'transparent')
+        .style('overflow', 'visible');
+
+    // See : https://observablehq.com/@harrylove/draw-a-circle-dot-marker-on-a-line-path-with-d3
+    // intersect하는 부분에 circle 추가하기
+    svg.append('defs')
+        .append('marker')
+        .attr('id', 'dot')
+        .attr('viewBox', [0, 0, 20, 20])
+        .attr('refX', 10)
+        .attr('refY', 10)
+        .attr('markerWidth', 3)
+        .attr('markerHeight', 3)
+        .append('circle')
+        .attr('cx', 10)
+        .attr('cy', 10)
+        .attr('r', 10)
+        .style('fill', 'rgba(54, 162, 235, 1)')
+        .style('stroke', 'rgba(54, 162, 235, 1)');
+
+    return svg;
+}
+
+export const createLineGraph = ({ svg, width, height, margin: [mt, mr, mb, ml] }) => {
+    const graphWidth = width - mr - ml;
+    const graphHeight = height - mt - mb;
+
+    // 그래프가 그려질 svg의 사이즈 설정
+    const graph = svg
+        .append('g')
+        .attr('width', graphWidth)
+        .attr('height', graphHeight)
+        // translate를 해서 그래프가 전체 캔버스의 중심에서 그려지도록 설정
+        .attr('transform', `translate(${ml}, ${mt})`);
+
+    return graph;
+};
+
+// TOOLTIP 그리기!!!
+// https://observablehq.com/@d3/line-with-tooltip
+export const createLineTooltip = ({ svg, yData, singleData, indexData, x, y, total, toolTipText }) => {
+    // 그래프에 TOOLTIP 추가하기
+    const tooltip = svg.append('g').style('pointer-events', 'none');
+
+    // 그래프에 툴팁 관련 이벤트 리스너 추가하기
+    svg.on('pointerenter pointermove', function (event) {
+        // https://github.com/d3/d3-scale/blob/v4.0.2/README.md#continuous_invert
+        // invert : 현재 마우스 포인터의 위치를 넘겨주면 그 위치에 해당하는 실제 데이터 값을 반환
+        // continuous scale만 사용 가능한 함수
+
+        // https://github.com/d3/d3-array/blob/v3.2.0/README.md#bisectCenter
+        // bisectCenter : x의 값에 가장 근접한 값의 index를 반환
+        // x축을 만들 때 사용한 데이터를 넘겨주기
+        // ->array에서 넘겨 받은 x의 값에 가까운 데이터를 찾고 해당 데이터의 index를 반환
+        const i = d3.bisectCenter(indexData, x.invert(d3.pointer(event)[0]));
+        const left = d3.bisectLeft(indexData, x.invert(d3.pointer(event)[0]));
+        const right = d3.bisectRight(indexData, x.invert(d3.pointer(event)[0]));
+
+        const coord = left === total || right === total ? total : i > 0 ? i - 1 : 0;
+
+        // 툴팁 UI
+        tooltip.style('display', null);
+        tooltip.attr(
+            'transform',
+            `translate(${100 + x(coord === total ? coord - 1 : coord)},${
+                y(yData[coord === total ? total - 1 : coord]) + 70
+            })`
+        );
+
+        // Tooltip 그리기
+        const path = tooltip.selectAll('path').data([,]).join('path').attr('fill', 'white').attr('stroke', 'black');
+        const text = tooltip
+            .selectAll('text')
+            .data([,])
+            .join('text')
+            .call((text) =>
+                text
+                    .selectAll('tspan')
+                    .data(`${toolTipText(coord === total ? total - 1 : coord)}`.split(/\n/))
+                    .join('tspan')
+                    .attr('x', 0)
+                    .attr('y', (_, i) => `${i * 1.1}em`)
+                    .attr('font-weight', (_, i) => (i ? null : 'bold'))
+                    .text((d) => d)
+            );
+
+        const { y: yCoord, width: w, height: h } = text.node().getBBox();
+        text.attr('transform', `translate(${-w / 2},${15 - yCoord})`);
+        path.attr('d', `M${-w / 2 - 10},5H-5l5,-5l5,5H${w / 2 + 10}v${h + 20}h-${w + 20}z`);
+        svg.property('value', singleData[coord]).dispatch('input', { bubbles: true });
+    })
+        .on('pointerleave', function () {
+            tooltip.style('display', 'none');
+            svg.node().value = null;
+            svg.dispatch('input', { bubbles: true });
+        })
+        .on('touchstart', (event) => event.preventDefault());
+};
+
+export const createLine = ({ graph, d }) => {
+    graph
+        .append('path')
+        .attr('fill', 'none')
+        .attr('stroke', 'rgba(54, 162, 235, 0.2)')
+        .attr('stroke-width', 3)
+        .attr('stroke-linecap', 'round')
+        .attr('stroke-linejoin', 'round')
+        .attr('marker-start', 'url(#dot)')
+        .attr('marker-mid', 'url(#dot)')
+        .attr('marker-end', 'url(#dot)')
+        .attr('d', d)
+        .call(lineTransition);
+};
+
 export const createCanvas = ({ canvas, width, height, margin: [mt, mr, mb, ml], tooltipOptions }) => {
     const graphWidth = width - mr - ml;
     const graphHeight = height - mt - mb;
@@ -90,6 +217,7 @@ export const createAxis = ({ graph, draw, type, axisType = '', domain, range, op
                 .axisBottom(scale)
                 .ticks(options.ticks)
                 .tickSize(options.tickSize + 6)
+                .tickFormat(options.tickFormat || null)
                 // x축 label과 x축 사이의 간격 설정
                 .tickPadding(options.tickPadding);
         } else {
@@ -211,7 +339,21 @@ export const animateBar = ({ graph, y, height }) => {
         .delay((_, i) => i * 10);
 };
 
-export const createLines = ({ graph, data, x, y, d, fill, onMouseOver, onMouseMove, onMouseLeave, transition }) => {
+// See : https://observablehq.com/@jurestabuc/animated-line-chart
+function lineTransition(path) {
+    path.transition()
+        .duration(3000)
+        .attrTween('stroke-dasharray', function () {
+            const length = this.getTotalLength();
+            const interploate = d3.interpolateString('0,' + length, length + ',' + length);
+            return function (t) {
+                return interploate(t);
+            };
+        })
+        .on('end', () => d3.select(this).call(lineTransition));
+}
+
+export const createLines = ({ graph, data, x, y, d, fill, onMouseOver, onMouseMove, onMouseLeave }) => {
     graph
         .selectAll('lines')
         .data(data)
@@ -220,8 +362,7 @@ export const createLines = ({ graph, data, x, y, d, fill, onMouseOver, onMouseMo
         .attr('stroke', fill)
         .style('stroke-width', 4)
         .style('fill', 'none')
-        // .attr('transform', `translate(${options.dimensions.margin[3]}, ${options.dimensions.margin[0]})`)
-        .call(transition);
+        .call(lineTransition);
 
     // Point 추가가 추가될 group을 category별로 생성
     const dotG = graph.selectAll('dots').data(data).join('g').style('fill', fill);
@@ -234,7 +375,6 @@ export const createLines = ({ graph, data, x, y, d, fill, onMouseOver, onMouseMo
         .attr('cy', y)
         .attr('r', 5)
         .attr('stroke', 'white')
-        // .attr('transform', `translate(${options.dimensions.margin[3]}, ${options.dimensions.margin[0]})`)
         .on('mouseover', onMouseOver)
         .on('mousemove', onMouseMove)
         .on('mouseleave', onMouseLeave);

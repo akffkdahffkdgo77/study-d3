@@ -6,6 +6,7 @@ import MultiLineChart from '../components/MultiLineChart';
 import StackedBarChart from '../components/StackedBarChart';
 import { barData, barOptions } from '../constants/bar';
 import { groupedData, groupedOptions } from '../constants/groupedBar';
+import { lineData, lineOptions } from '../constants/line';
 import { multiLineData, multiLineOptions } from '../constants/multiLine';
 import { stackedData, stackedOptions } from '../constants/stackedBar';
 
@@ -25,7 +26,7 @@ function App() {
                 <BubbleChart />
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', columnGap: 50, padding: 50 }}>
-                <LineChart />
+                <LineChart data={lineData} options={lineOptions} />
                 <MultiLineChart data={multiLineData} options={multiLineOptions} />
             </div>
         </div>

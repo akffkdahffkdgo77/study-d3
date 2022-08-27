@@ -53,7 +53,6 @@ export default function MultiLineChart({ data, options }) {
                 tickPadding: 10
             }
         });
-
         const { scale: yScale } = createAxis({
             graph,
             type: 'linear',
@@ -66,7 +65,6 @@ export default function MultiLineChart({ data, options }) {
             draw: true,
             options: { graphWidth }
         });
-
         const { scale: colors } = createAxis({ graph, type: 'color', domain: category, range: options.colors });
 
         // See : https://d3-graph-gallery.com/graph/connectedscatter_tooltip.html
@@ -111,56 +109,8 @@ export default function MultiLineChart({ data, options }) {
             fill: (d) => colors(d.name),
             onMouseOver,
             onMouseMove,
-            onMouseLeave,
-            transition
+            onMouseLeave
         });
-
-        // graph
-        //     .selectAll('lines')
-        //     .data(chartData)
-        //     .join('path')
-        //     .attr('d', (d) => line(d.values))
-        //     .attr('stroke', (d) => colors(d.name))
-        //     .style('stroke-width', 4)
-        //     .style('fill', 'none')
-        //     // .attr('transform', `translate(${options.dimensions.margin[3]}, ${options.dimensions.margin[0]})`)
-        //     .call(transition);
-
-        // // Point 추가가 추가될 group을 category별로 생성
-        // const dotG = graph
-        //     .selectAll('dots')
-        //     .data(chartData)
-        //     .join('g')
-        //     .style('fill', (d) => colors(d.name));
-
-        // // 생성한 group마다 circle 그려주기
-        // dotG.selectAll('points')
-        //     .data((d) => d.values)
-        //     .join('circle')
-        //     .attr('cx', (d) => xScale(d.year))
-        //     .attr('cy', (d) => yScale(d.value))
-        //     .attr('r', 5)
-        //     .attr('stroke', 'white')
-        //     // .attr('transform', `translate(${options.dimensions.margin[3]}, ${options.dimensions.margin[0]})`)
-        //     .on('mouseover', onMouseOver)
-        //     .on('mousemove', onMouseMove)
-        //     .on('mouseleave', onMouseLeave);
-
-        // See : https://observablehq.com/@jurestabuc/animated-line-chart
-        function transition(path) {
-            path.transition()
-                .duration(3000)
-                .attrTween('stroke-dasharray', tweenDash)
-                .on('end', () => d3.select(this).call(transition));
-        }
-
-        function tweenDash() {
-            const length = this.getTotalLength();
-            const interploate = d3.interpolateString('0,' + length, length + ',' + length);
-            return function (t) {
-                return interploate(t);
-            };
-        }
     }, [data, options]);
 
     return (
