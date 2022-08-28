@@ -1,5 +1,5 @@
 const lineDummy = Array.from(Array(21)).map((_, i) => ({
-    date: i,
+    label: i,
     x: Math.floor(Math.random() * (1000 - 500)) + 500,
     y: Math.floor(Math.random() * (500 - 100)) + 100,
     z: Math.floor(Math.random() * (1500 - 1000)) + 1000

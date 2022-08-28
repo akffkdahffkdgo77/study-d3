@@ -20,6 +20,7 @@ export default function MultiLineChart({ data, options }) {
 
         rendered.current = false;
 
+        // Default 설정
         const { category, datasets } = data;
         const graphWidth = lineChart.current.clientWidth - options.dimensions.margin[1] - options.dimensions.margin[3];
         const graphHeight = options.dimensions.height - options.dimensions.margin[0] - options.dimensions.margin[2];
@@ -27,7 +28,7 @@ export default function MultiLineChart({ data, options }) {
         // Data 형식 맞추기
         const chartData = category.map((category) => ({
             name: category,
-            values: datasets.map((d) => ({ year: d.date, value: d[category] }))
+            values: datasets.map((d) => ({ label: d.label, value: d[category] }))
         }));
 
         // SVG 추가하기
@@ -44,7 +45,7 @@ export default function MultiLineChart({ data, options }) {
             graph,
             type: 'linear',
             axisType: 'x',
-            domain: d3.extent(datasets, (d) => d.date),
+            domain: d3.extent(datasets, (d) => d.label),
             range: [0, graphWidth],
             draw: true,
             options: {
@@ -53,18 +54,27 @@ export default function MultiLineChart({ data, options }) {
                 tickPadding: 10
             }
         });
+
         const { scale: yScale } = createAxis({
             graph,
             type: 'linear',
             axisType: 'y',
             domain: [
                 0,
-                d3.max([d3.max(datasets, (d) => d.x), d3.max(datasets, (d) => d.y), d3.max(datasets, (d) => d.z)])
+                d3.max(
+                    (function () {
+                        return category.map((category) => {
+                            console.log(d3.max(datasets, (d) => d[category]));
+                            return d3.max(datasets, (d) => d[category]);
+                        });
+                    })()
+                )
             ],
             range: [graphHeight, 0],
             draw: true,
             options: { graphWidth }
         });
+
         const { scale: colors } = createAxis({ graph, type: 'color', domain: category, range: options.colors });
 
         // See : https://d3-graph-gallery.com/graph/connectedscatter_tooltip.html
@@ -80,7 +90,7 @@ export default function MultiLineChart({ data, options }) {
                     <div class="d3-tooltip-color-${category.name}">
                         <span></span>
                     </div>
-                    <span class="d3-tooltip-name">${d.year}:</span>${d.value.toLocaleString()}
+                    <span class="d3-tooltip-name">${d.label}:</span>${d.value.toLocaleString()}
                 </div>`
                 )
                 .style('visibility', 'visible');
@@ -97,13 +107,13 @@ export default function MultiLineChart({ data, options }) {
         // 라인 그리기
         const line = d3
             .line()
-            .x((d) => xScale(d.year))
+            .x((d) => xScale(d.label))
             .y((d) => yScale(d.value));
 
         createLines({
             graph,
             data: chartData,
-            x: (d) => xScale(d.year),
+            x: (d) => xScale(d.label),
             y: (d) => yScale(d.value),
             d: (d) => line(d.values),
             fill: (d) => colors(d.name),
