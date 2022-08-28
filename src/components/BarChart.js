@@ -13,6 +13,7 @@ export default function BarChart({ data, options }) {
 
         rendered.current = false;
 
+        // Default 설정
         const { labels, datasets } = data;
         const graphWidth = barChart.current.clientWidth - options.dimensions.margin[1] - options.dimensions.margin[3];
         const graphHeight = options.dimensions.height - options.dimensions.margin[0] - options.dimensions.margin[2];
@@ -39,21 +40,21 @@ export default function BarChart({ data, options }) {
                 tickPadding: 10
             }
         });
-
         const { scale: yScale } = createAxis({
             graph,
             type: 'linear',
             axisType: 'y',
-            domain: [0, d3.extent(datasets, (d) => d.totalCount)[1]],
+            domain: [0, d3.extent(datasets, (d) => d.value)[1]],
             range: [graphHeight, 0],
             draw: true,
             options: { graphWidth }
         });
 
+        // 그래프 그리기
         createBar({
             graph,
             data: datasets,
-            x: (d) => xScale(d.krName),
+            x: (d) => xScale(d.label),
             y: yScale(0),
             color: options.colors,
             options: { width: xScale.bandwidth(), height: graphHeight - yScale(0) },
@@ -73,7 +74,7 @@ export default function BarChart({ data, options }) {
                         <div class="d3-tooltip-color">
                             <span></span>
                         </div>
-                        <span class="d3-tooltip-name">totalCount:</span>${data.totalCount.toLocaleString()}
+                        <span class="d3-tooltip-name">totalCount:</span>${data.value.toLocaleString()}
                     </div>`
                 )
                 .style('visibility', 'visible');
@@ -91,8 +92,8 @@ export default function BarChart({ data, options }) {
 
         animateBar({
             graph: barChart.current,
-            y: (d) => yScale(d.totalCount),
-            height: (d) => graphHeight - yScale(d.totalCount)
+            y: (d) => yScale(d.value),
+            height: (d) => graphHeight - yScale(d.value)
         });
     }, [data, options]);
 

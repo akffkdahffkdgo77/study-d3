@@ -1,3 +1,4 @@
+// 데이터 형식 { label : '', value : '' }[]
 const barDummy = [
     '전국',
     '서울',
@@ -17,7 +18,7 @@ const barDummy = [
     '경북',
     '경남',
     '제주'
-].map((krName) => ({ krName, totalCount: Math.floor(Math.random() * (1000000 - 100)) + 100 }));
+].map((label) => ({ label, value: Math.floor(Math.random() * (1000000 - 100)) + 100 }));
 
 const tooltipOptions = {
     position: 'absolute',
@@ -34,7 +35,7 @@ const tooltipOptions = {
 const colors = ['#D8ECFF', '#FFDEE3', '#FFF6E1', '#E0F3F2', '#E8DDFF', '#FFEDDD'];
 
 export const barData = {
-    labels: barDummy.map((item) => item.krName),
+    labels: barDummy.map((item) => item.label),
     datasets: barDummy
 };
 
