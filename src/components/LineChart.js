@@ -21,6 +21,7 @@ export default function LineChart({ data, options }) {
 
         rendered.current = false;
 
+        // Default 설정
         const { xLabels, yLabels, datasets } = data;
         const width = lineChart.current.clientWidth + Math.floor(options.dimensions.margin[3] / 2);
         const height = options.dimensions.height;
@@ -48,7 +49,7 @@ export default function LineChart({ data, options }) {
                 ticks: datasets.length,
                 tickSize: graphHeight,
                 tickPadding: 10,
-                tickFormat: (_d, i) => datasets[i].date.split('T')[0]
+                tickFormat: (_d, i) => datasets[i].label.split('T')[0]
             }
         });
         const { scale: yScale } = createAxis({
