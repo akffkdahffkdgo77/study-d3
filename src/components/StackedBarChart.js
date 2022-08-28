@@ -18,7 +18,8 @@ export default function StackedBarChart({ data, options }) {
 
         rendered.current = false;
 
-        const { xLabels, yLabels, category, datasets } = data;
+        // Default 설정
+        const { xLabels, category, datasets } = data;
         const graphWidth = barChart.current.clientWidth - options.dimensions.margin[1] - options.dimensions.margin[3];
         const graphHeight = options.dimensions.height - options.dimensions.margin[0] - options.dimensions.margin[2];
 
@@ -44,32 +45,35 @@ export default function StackedBarChart({ data, options }) {
                 tickPadding: 10
             }
         });
+
         const { scale: yScale } = createAxis({
             graph,
             type: 'linear',
             axisType: 'y',
-            domain: [0, yLabels[1]],
+            domain: [
+                0,
+                d3.extent(datasets, function (d) {
+                    let total = 0;
+                    category.forEach((category) => (total += d[category]));
+                    return total;
+                })[1]
+            ],
             range: [graphHeight, 0],
             draw: true,
             options: { graphWidth }
         });
 
-        // Sub Group별 색상 설정하기
-        const { scale: color } = createAxis({
-            graph,
-            type: 'color',
-            domain: category,
-            range: options.colors
-        });
+        // Category별 색상 설정하기
+        const { scale: color } = createAxis({ graph, type: 'color', domain: category, range: options.colors });
 
-        // Sub Group별로 stack을 만듬
+        // Category별로 stack을 만듬
         const stackedData = d3.stack().keys(category)(datasets);
 
         // Stacked Bar Graph 그리기
         createStackedBar({
             graph,
             data: stackedData,
-            x: (d) => xScale(d.data.krName),
+            x: (d) => xScale(d.data.label),
             y: yScale(0),
             color: (d) => color(d.key),
             options: { width: xScale.bandwidth(), height: graphHeight - yScale(0) },
@@ -83,7 +87,7 @@ export default function StackedBarChart({ data, options }) {
             const categoryValue = d.data[categoryName]; // 데이터 값
             tooltip
                 .html(
-                    `<div class="d3-tooltip-name">${d.data.krName}</div>
+                    `<div class="d3-tooltip-name">${d.data.label}</div>
                         <br/>
                         <div class="d3-tooltip-label">
                             <div class="d3-tooltip-color-${categoryName}">

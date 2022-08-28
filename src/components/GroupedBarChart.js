@@ -52,7 +52,7 @@ export default function GroupBarChart({ data, options }) {
                     let total = 0;
                     category.forEach((category) => (total += d[category]));
                     return total;
-                })
+                })[1]
             ],
             range: [graphHeight, 0],
             draw: true,

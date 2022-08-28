@@ -270,10 +270,10 @@ export const createBar = ({ graph, x, y, color, data, options, mouseOver, mouseM
 
 export const createStackedBar = ({ graph, x, y, color, data, options, mouseOver, mouseMove, mouseLeave }) => {
     // Stacked Bar Graph 그리기
-    // 서브 그룹별로 stack을 만든 데이터를 넘겨줌
+    // 카테고리별로 stack을 만든 데이터를 넘겨줌
     const barG = graph.append('g').selectAll('g').data(data);
 
-    // 서브 그룹마다 rect를 만듬
+    // 카테고리마다 rect를 만듬
     const bar = barG
         .join('g')
         .attr('fill', color)
@@ -307,10 +307,10 @@ export const createGroupedBar = ({
     // Stacked Bar Graph 그리기
     const barG = graph.append('g').selectAll('g').data(data);
 
-    // 서브 그룹마다 rect를 만듬
+    // 카테고리마다 rect를 만듬
     const bar = barG
         .join('g')
-        .attr('transform', (d) => `translate(${x(d.krName)}, 0)`)
+        .attr('transform', (d) => `translate(${x(d.label)}, 0)`)
         .selectAll('rect')
         .data(function (d) {
             return category.map((key) => ({ key, value: d[key] }));

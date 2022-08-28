@@ -19,8 +19,8 @@ export const stackedDummy = [
     '경북',
     '경남',
     '제주'
-].map((krName) => ({
-    krName,
+].map((label) => ({
+    label,
     x: Math.floor(Math.random() * (1000000 - 100)) + 100,
     y: Math.floor(Math.random() * (1000000 - 100)) + 100,
     z: Math.floor(Math.random() * (1000000 - 100)) + 100
@@ -40,11 +40,9 @@ const tooltipOptions = {
 
 const colors = ['#D8ECFF', '#FFDEE3', '#FFF6E1', '#E0F3F2', '#E8DDFF', '#FFEDDD'];
 
-
 export const stackedData = {
     category: ['x', 'y', 'z'],
-    xLabels: stackedDummy.map((item) => item.krName),
-    yLabels: d3.extent(stackedDummy, (d) => d.x + d.y + d.z),
+    xLabels: stackedDummy.map((item) => item.label),
     datasets: stackedDummy
 };
 
