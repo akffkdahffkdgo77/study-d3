@@ -18,7 +18,8 @@ export default function GroupBarChart({ data, options }) {
 
         rendered.current = false;
 
-        const { xLabels, yLabels, category, datasets } = data;
+        // Default 설정
+        const { xLabels, category, datasets } = data;
         const graphWidth = barChart.current.clientWidth - options.dimensions.margin[1] - options.dimensions.margin[3];
         const graphHeight = options.dimensions.height - options.dimensions.margin[0] - options.dimensions.margin[2];
 
@@ -40,11 +41,19 @@ export default function GroupBarChart({ data, options }) {
             draw: true,
             options: { padding: 0.25, tickSize: graphHeight, tickPadding: 10 }
         });
+
         const { scale: yScale } = createAxis({
             graph,
             type: 'linear',
             axisType: 'y',
-            domain: [0, yLabels[1]],
+            domain: [
+                0,
+                d3.extent(datasets, function (d) {
+                    let total = 0;
+                    category.forEach((category) => (total += d[category]));
+                    return total;
+                })
+            ],
             range: [graphHeight, 0],
             draw: true,
             options: { graphWidth }
@@ -59,7 +68,7 @@ export default function GroupBarChart({ data, options }) {
             options: { padding: 0.5, tickSize: 0, tickPadding: 0 }
         });
 
-        // Sub Group별 색상 설정하기
+        // Category별 색상 설정하기
         const { scale: color } = createAxis({ graph, type: 'color', domain: category, range: options.colors });
 
         // Grouped Bar Graph 그리기
@@ -78,10 +87,10 @@ export default function GroupBarChart({ data, options }) {
         });
 
         function mouseOver(_event, d) {
-            const category = d3.select(this.parentNode).datum(); // 현재 선택한 데이터의 서브 그룹명
+            const category = d3.select(this.parentNode).datum(); // 현재 선택한 데이터의 카테고리명
             tooltip
                 .html(
-                    `<div class="d3-tooltip-name">${category.krName}</div>
+                    `<div class="d3-tooltip-name">${category.label}</div>
                     <br/>
                     <div class="d3-tooltip-label">
                         <div class="d3-tooltip-color-${d.key}">
@@ -97,7 +106,7 @@ export default function GroupBarChart({ data, options }) {
             tooltip.style('top', event.pageY - 10 + 'px').style('left', event.pageX + 10 + 'px');
         }
 
-        function mouseLeave(_event, d) {
+        function mouseLeave(_event, _d) {
             tooltip.html(``).style('visibility', 'hidden');
         }
 

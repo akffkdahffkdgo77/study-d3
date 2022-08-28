@@ -35,7 +35,7 @@ const tooltipOptions = {
 const colors = ['#D8ECFF', '#FFDEE3', '#FFF6E1', '#E0F3F2', '#E8DDFF', '#FFEDDD'];
 
 export const barData = {
-    labels: barDummy.map((item) => item.label),
+    xLabels: barDummy.map((item) => item.label),
     datasets: barDummy
 };
 

@@ -14,7 +14,7 @@ export default function BarChart({ data, options }) {
         rendered.current = false;
 
         // Default 설정
-        const { labels, datasets } = data;
+        const { xLabels, datasets } = data;
         const graphWidth = barChart.current.clientWidth - options.dimensions.margin[1] - options.dimensions.margin[3];
         const graphHeight = options.dimensions.height - options.dimensions.margin[0] - options.dimensions.margin[2];
 
@@ -31,14 +31,10 @@ export default function BarChart({ data, options }) {
         const { scale: xScale } = createAxis({
             graph,
             type: 'band',
-            domain: labels,
+            domain: xLabels,
             range: [0, graphWidth],
             draw: true,
-            options: {
-                padding: 0.25,
-                tickSize: graphHeight,
-                tickPadding: 10
-            }
+            options: { padding: 0.25, tickSize: graphHeight, tickPadding: 10 }
         });
         const { scale: yScale } = createAxis({
             graph,

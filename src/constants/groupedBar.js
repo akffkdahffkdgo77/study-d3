@@ -1,26 +1,7 @@
 import * as d3 from 'd3';
 
-const groupedDummy = [
-    '전국',
-    '서울',
-    '부산',
-    '대구',
-    '인천'
-    // '광주',
-    // '대전',
-    // '울산',
-    // '세종',
-    // '경기',
-    // '강원',
-    // '충북',
-    // '충남',
-    // '전북',
-    // '전남',
-    // '경북',
-    // '경남',
-    // '제주'
-].map((krName) => ({
-    krName,
+const groupedDummy = ['전국', '서울', '부산', '대구', '인천'].map((label) => ({
+    label,
     x: Math.floor(Math.random() * (1000000 - 100)) + 100,
     y: Math.floor(Math.random() * (1000000 - 100)) + 100,
     z: Math.floor(Math.random() * (1000000 - 100)) + 100
@@ -42,8 +23,7 @@ const colors = ['#D8ECFF', '#FFDEE3', '#FFF6E1', '#E0F3F2', '#E8DDFF', '#FFEDDD'
 
 export const groupedData = {
     category: ['x', 'y', 'z'],
-    xLabels: groupedDummy.map((item) => item.krName),
-    yLabels: d3.extent(groupedDummy, (d) => d.x + d.y + d.z),
+    xLabels: groupedDummy.map((item) => item.label),
     datasets: groupedDummy
 };
 
