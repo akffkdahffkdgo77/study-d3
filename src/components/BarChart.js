@@ -63,7 +63,7 @@ export default function BarChart({ data, options }) {
             tooltip
                 .html(
                     `<div class="d3-tooltip-name">
-                        ${data.krName}
+                        ${data.label}
                     </div>
                     <br/>
                     <div class="d3-tooltip-label">

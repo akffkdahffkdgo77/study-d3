@@ -14,7 +14,6 @@ export function createLineCanvas({ canvas, width, height }) {
         .attr('width', width)
         .attr('height', height)
         .attr('viewBox', [0, 0, width, height])
-        .attr('style', 'max-width: 100%; height: auto; height: intrinsic;')
         .attr('font-family', 'sans-serif')
         .attr('font-size', 10)
         .style('-webkit-tap-highlight-color', 'transparent')
@@ -81,7 +80,7 @@ export const createLineTooltip = ({ svg, yData, singleData, indexData, x, y, tot
         tooltip.style('display', null);
         tooltip.attr(
             'transform',
-            `translate(${100 + x(coord === total ? coord - 1 : coord)},${
+            `translate(${70 + x(coord === total ? coord - 1 : coord)},${
                 y(yData[coord === total ? total - 1 : coord]) + 70
             })`
         );
@@ -251,7 +250,7 @@ export const createAxis = ({ graph, draw, type, axisType = '', domain, range, op
 };
 
 export const createBar = ({ graph, x, y, color, data, options, mouseOver, mouseMove, mouseLeave }) => {
-    const bars = graph.selectAll('rect').data(data);
+    const bars = graph.selectAll().data(data);
     bars.enter()
         .append('rect')
         .attr('x', x)
@@ -271,13 +270,14 @@ export const createBar = ({ graph, x, y, color, data, options, mouseOver, mouseM
 export const createStackedBar = ({ graph, x, y, color, data, options, mouseOver, mouseMove, mouseLeave }) => {
     // Stacked Bar Graph 그리기
     // 카테고리별로 stack을 만든 데이터를 넘겨줌
-    const barG = graph.append('g').selectAll('g').data(data);
+    const barG = graph.selectAll().data(data);
 
     // 카테고리마다 rect를 만듬
+    // https://github.com/d3/d3-selection/blob/v3.0.0/README.md#selection_join
     const bar = barG
         .join('g')
         .attr('fill', color)
-        .selectAll('rect')
+        .selectAll()
         .data((d) => d);
 
     // rect를 합치면서 하나의 bar 그리기
@@ -304,18 +304,15 @@ export const createGroupedBar = ({
     mouseMove,
     mouseLeave
 }) => {
-    // Stacked Bar Graph 그리기
-    const barG = graph.append('g').selectAll('g').data(data);
+    // Grouped Bar Graph 그리기
+    const barG = graph.selectAll().data(data);
 
     // 카테고리마다 rect를 만듬
     const bar = barG
         .join('g')
         .attr('transform', (d) => `translate(${x(d.label)}, 0)`)
-        .selectAll('rect')
-        .data(function (d) {
-            return category.map((key) => ({ key, value: d[key] }));
-        });
-
+        .selectAll()
+        .data((d) => category.map((key) => ({ key, value: d[key] })));
     // rect를 합치면서 하나의 bar 그리기
     bar.join('rect')
         .attr('x', xSubGroup)
@@ -355,7 +352,7 @@ function lineTransition(path) {
 
 export const createLines = ({ graph, data, x, y, d, fill, onMouseOver, onMouseMove, onMouseLeave }) => {
     graph
-        .selectAll('lines')
+        .selectAll()
         .data(data)
         .join('path')
         .attr('d', d)
@@ -365,10 +362,10 @@ export const createLines = ({ graph, data, x, y, d, fill, onMouseOver, onMouseMo
         .call(lineTransition);
 
     // Point 추가가 추가될 group을 category별로 생성
-    const dotG = graph.selectAll('dots').data(data).join('g').style('fill', fill);
+    const dotG = graph.selectAll().data(data).join('g').style('fill', fill);
 
     // 생성한 group마다 circle 그려주기
-    dotG.selectAll('points')
+    dotG.selectAll()
         .data((d) => d.values)
         .join('circle')
         .attr('cx', x)

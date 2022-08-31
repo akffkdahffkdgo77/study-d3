@@ -63,10 +63,7 @@ export default function MultiLineChart({ data, options }) {
                 0,
                 d3.max(
                     (function () {
-                        return category.map((category) => {
-                            console.log(d3.max(datasets, (d) => d[category]));
-                            return d3.max(datasets, (d) => d[category]);
-                        });
+                        return category.map((category) => d3.max(datasets, (d) => d[category]));
                     })()
                 )
             ],

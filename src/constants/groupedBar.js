@@ -1,5 +1,3 @@
-import * as d3 from 'd3';
-
 const groupedDummy = ['전국', '서울', '부산', '대구', '인천'].map((label) => ({
     label,
     x: Math.floor(Math.random() * (1000000 - 100)) + 100,

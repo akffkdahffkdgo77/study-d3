@@ -122,11 +122,9 @@ export default function BubbleChart() {
         };
 
         graph
-            .append('g')
-            .selectAll('dot')
+            .selectAll()
             .data(data)
             .join('circle')
-            .attr('class', 'bubbles')
             .attr('cx', (d) => xScale(d.x))
             .attr('cy', (d) => yScale(d.y))
             .attr('r', (d) => zScale(d.z))
