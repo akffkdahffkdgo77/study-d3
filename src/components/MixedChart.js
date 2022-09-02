@@ -99,7 +99,8 @@ export default function MixedChart() {
             .call((g) => g.select('.domain').remove())
             .call((g) =>
                 g.selectAll('.tick line').attr('stroke-opacity', (_d, i) => (i === 0 || (i + 1) % 12 === 0 ? 0.1 : 0))
-            );
+            )
+            .call((g) => g.selectAll('.tick line').attr('stroke-dasharray', (_d, i) => (i === 0 || i === 47 ? 0 : 5)));
 
         // y축 설정
         // 축 및 grid line 색상 변경
@@ -153,6 +154,63 @@ export default function MixedChart() {
 
         graph
             .append('g')
+            .append('line')
+            .attr('x1', 0)
+            .attr('x2', xScale(data[11].label))
+            .attr('y1', yScale(80))
+            .attr('y2', yScale(80))
+            .style('stroke', '#EE3FA2');
+        graph
+            .append('g')
+            .append('line')
+            .attr('x1', xScale(data[11].label))
+            .attr('x2', xScale(data[11].label))
+            .attr('y1', yScale(80))
+            .attr('y2', yScale(60))
+            .style('stroke', '#EE3FA2');
+        graph
+            .append('g')
+            .append('line')
+            .attr('x1', xScale(data[11].label))
+            .attr('x2', xScale(data[23].label))
+            .attr('y1', yScale(60))
+            .attr('y2', yScale(60))
+            .style('stroke', '#EE3FA2');
+        graph
+            .append('g')
+            .append('line')
+            .attr('x1', xScale(data[23].label))
+            .attr('x2', xScale(data[23].label))
+            .attr('y1', yScale(60))
+            .attr('y2', yScale(40))
+            .style('stroke', '#EE3FA2');
+        graph
+            .append('g')
+            .append('line')
+            .attr('x1', xScale(data[23].label))
+            .attr('x2', xScale(data[35].label))
+            .attr('y1', yScale(40))
+            .attr('y2', yScale(40))
+            .style('stroke', '#EE3FA2');
+        graph
+            .append('g')
+            .append('line')
+            .attr('x1', xScale(data[35].label))
+            .attr('x2', xScale(data[35].label))
+            .attr('y1', yScale(40))
+            .attr('y2', yScale(20))
+            .style('stroke', '#EE3FA2');
+        graph
+            .append('g')
+            .append('line')
+            .attr('x1', xScale(data[35].label))
+            .attr('x2', graphWidth)
+            .attr('y1', yScale(20))
+            .attr('y2', yScale(20))
+            .style('stroke', '#EE3FA2');
+
+        graph
+            .append('g')
             .selectAll()
             .data(data.filter((d) => d.value > 0))
             .enter()
@@ -161,13 +219,13 @@ export default function MixedChart() {
             .attr('cy', (d) => yScale(d.value))
             .attr('r', 6)
             .attr('fill', (d, i) => {
-                if (i < 12 && d.value < 80) {
+                if (i < 12 && d.value <= 80) {
                     return '#EE3FA2';
-                } else if (i < 24 && d.value < 60) {
+                } else if (i < 24 && d.value <= 60) {
                     return '#EE3FA2';
-                } else if (i < 36 && d.value < 40) {
+                } else if (i < 36 && d.value <= 40) {
                     return '#EE3FA2';
-                } else if (i < 48 && d.value < 20) {
+                } else if (i < 48 && d.value <= 20) {
                     return '#EE3FA2';
                 } else {
                     return '#1B43E0';
