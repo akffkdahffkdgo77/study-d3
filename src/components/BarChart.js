@@ -36,6 +36,7 @@ export default function BarChart({ data, options }) {
             draw: true,
             options: { padding: 0.25, tickSize: graphHeight, tickPadding: 10 }
         });
+
         const { scale: yScale } = createAxis({
             graph,
             type: 'linear',
@@ -46,7 +47,6 @@ export default function BarChart({ data, options }) {
             options: { graphWidth }
         });
 
-        // 그래프 그리기
         createBar({
             graph,
             data: datasets,
@@ -65,12 +65,11 @@ export default function BarChart({ data, options }) {
                     `<div class="d3-tooltip-name">
                         ${data.label}
                     </div>
-                    <br/>
                     <div class="d3-tooltip-label">
-                        <div class="d3-tooltip-color">
+                        <div class="d3-tooltip-color" style="background-color: ${options.colors}">
                             <span></span>
                         </div>
-                        <span class="d3-tooltip-name">totalCount:</span>${data.value.toLocaleString()}
+                        <span class="d3-tooltip-value">totalCount:</span>${data.value.toLocaleString()}
                     </div>`
                 )
                 .style('visibility', 'visible');
