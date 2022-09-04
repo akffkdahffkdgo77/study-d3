@@ -12,81 +12,37 @@ code {
 }
 
 .d3-tooltip-name {
-    font-weight: 700;
-    padding-right: 5px;
+    background-color: #000000;
+    width: 100%;
+    height: 100%;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: 500;
 }
 
 .d3-tooltip-label {
+    width: 100%;
     display: flex;
     align-items: center;
+    font-size: 12px;
+    padding: 7px 10px;
+    font-weight: 700;
+    background-color: #252b2fbf;
+}
+
+.d3-tooltip-label > span {
+    font-weight: 400;
+    margin-right: 10px;
 }
 
 .d3-tooltip-color {
-    width: 15px;
-    height: 15px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-right: 5px;
-    background-color: #fff;
-}
-
-.d3-tooltip-color-x {
-    width: 15px;
-    height: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 5px;
-    background-color: #fff;
-}
-
-.d3-tooltip-color-x span {
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    background-color: #d8ecff;
-}
-
-.d3-tooltip-color-y {
-    width: 15px;
-    height: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 5px;
-    background-color: #fff;
-}
-
-.d3-tooltip-color-y span {
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    background-color: #ffdee3;
-}
-
-.d3-tooltip-color-z {
-    width: 15px;
-    height: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 5px;
-    background-color: #fff;
-}
-
-.d3-tooltip-color-z span {
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    background-color: #fff6e1;
-}
-
-.d3-tooltip-color span {
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    background-color: rgba(54, 162, 235, 0.2);
 }
 
 .bubbles:hover {

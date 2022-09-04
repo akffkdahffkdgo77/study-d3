@@ -28,12 +28,11 @@ const tooltipOptions = {
     position: 'absolute',
     top: 0,
     'z-index': 10,
-    'min-width': 100,
-    padding: 10,
-    'border-radius': 4,
+    'min-width': '120px',
+    'border-radius': '4px',
     color: '#fff',
-    background: '#252B2F',
-    visibility: 'hidden'
+    visibility: 'hidden',
+    overflow: 'hidden'
 };
 
 const colors = ['#D8ECFF', '#FFDEE3', '#FFF6E1', '#E0F3F2', '#E8DDFF', '#FFEDDD'];
