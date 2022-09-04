@@ -97,17 +97,28 @@ export default function BubbleChart() {
             .attr('class', 'd3-tooltip')
             .style('position', 'absolute')
             .style('z-index', '10')
-            .style('visibility', 'hidden')
-            .style('padding', '10px')
-            .style('minWidth', '100px')
-            .style('background', '#252B2F')
+            .style('min-width', '120px')
             .style('border-radius', '4px')
-            .style('color', '#fff');
+            .style('color', '#fff')
+            .style('overflow', 'hidden')
+            .style('visibility', 'hidden');
 
         const onEnter = function (event, d) {
+            const index = data.indexOf(d);
+
             tooltip
                 .style('visibility', 'visible')
-                .html('X Coordinate : ' + d?.x)
+                .html(
+                    `<div class="d3-tooltip-name">
+                        ${d?.x}
+                    </div>
+                    <div class="d3-tooltip-label">
+                        <div class="d3-tooltip-color" style="background-color: ${myColor(index)}">
+                            <span></span>
+                        </div>
+                        <span class="d3-tooltip-value">totalCount:</span>${d?.x.toLocaleString()}
+                    </div>`
+                )
                 .style('left', event.x / 2 + 'px')
                 .style('top', event.y / 2 + 30 + 'px');
             tooltip.transition().duration(10);
