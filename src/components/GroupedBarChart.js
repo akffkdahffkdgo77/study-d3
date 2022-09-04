@@ -91,12 +91,11 @@ export default function GroupBarChart({ data, options }) {
             tooltip
                 .html(
                     `<div class="d3-tooltip-name">${category.label}</div>
-                    <br/>
                     <div class="d3-tooltip-label">
-                        <div class="d3-tooltip-color-${d.key}">
+                        <div class="d3-tooltip-color" style="background-color: ${color(d.key)}">
                             <span></span>
                         </div>
-                        <span class="d3-tooltip-name">${d.key}: </span>${d.value.toLocaleString()}
+                        <span class="d3-tooltip-value">${d.key}: </span>${d.value.toLocaleString()}
                     </div>`
                 )
                 .style('visibility', 'visible');
