@@ -80,15 +80,14 @@ export default function MultiLineChart({ data, options }) {
             tooltip
                 .html(
                     `<div class="d3-tooltip-name">
-                    ${category.name}
-                </div>
-                <br/>
-                <div class="d3-tooltip-label">
-                    <div class="d3-tooltip-color-${category.name}">
-                        <span></span>
+                        ${category.name}
                     </div>
-                    <span class="d3-tooltip-name">${d.label}:</span>${d.value.toLocaleString()}
-                </div>`
+                    <div class="d3-tooltip-label">
+                        <div class="d3-tooltip-color" style="background-color: ${colors(category.name)}">
+                            <span></span>
+                        </div>
+                        <span class="d3-tooltip-value">${d.label}:</span>${d.value.toLocaleString()}
+                    </div>`
                 )
                 .style('visibility', 'visible');
         }

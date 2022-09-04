@@ -131,15 +131,14 @@ export default function MixedChart() {
             tooltip
                 .html(
                     `<div class="d3-tooltip-name">
-                    ${d.label}
-                </div>
-                <br/>
-                <div class="d3-tooltip-label">
-                    <div class="d3-tooltip-color-${d.label}">
-                        <span></span>
+                        ${d.label}
                     </div>
-                    <span class="d3-tooltip-name">${d.label}:</span>${d.value.toLocaleString()}
-                </div>`
+                    <div class="d3-tooltip-label">
+                        <div class="d3-tooltip-color" style="background-color: #EE3FA2">
+                            <span></span>
+                        </div>
+                        <span class="d3-tooltip-value">${d.label}:</span>${d.value.toLocaleString()}
+                    </div>`
                 )
                 .style('visibility', 'visible');
         }

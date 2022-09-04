@@ -88,13 +88,12 @@ export default function StackedBarChart({ data, options }) {
             tooltip
                 .html(
                     `<div class="d3-tooltip-name">${d.data.label}</div>
-                        <br/>
-                        <div class="d3-tooltip-label">
-                            <div class="d3-tooltip-color-${categoryName}">
-                                <span></span>
-                            </div>
-                            <span class="d3-tooltip-name">${categoryName}: </span>${categoryValue.toLocaleString()}
-                        </div>`
+                    <div class="d3-tooltip-label">
+                        <div class="d3-tooltip-color" style="background-color: ${color(categoryName)}">
+                            <span></span>
+                        </div>
+                        <span class="d3-tooltip-value">${categoryName}: </span>${categoryValue.toLocaleString()}
+                    </div>`
                 )
                 .style('visibility', 'visible');
         }
