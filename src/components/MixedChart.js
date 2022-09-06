@@ -16,7 +16,6 @@ const data = Array.from(Array(47)).map((_, i) => ({
  *  References :
  *  https://d3-graph-gallery.com/graph/connectedscatter_multi.html
  */
-
 export default function MixedChart() {
     const mixedChart = useRef(null);
     const rendered = useRef(true);
@@ -29,8 +28,6 @@ export default function MixedChart() {
         }
 
         rendered.current = false;
-
-        // Data 형식 맞추기
 
         // SVG 추가하기
         const svg = d3
@@ -120,21 +117,33 @@ export default function MixedChart() {
             .style('position', 'absolute')
             .style('z-index', '10')
             .style('visibility', 'hidden')
-            .style('padding', '10px')
-            .style('minWidth', '100px')
-            .style('background', '#252B2F')
+            .style('min-width', '120px')
             .style('border-radius', '4px')
-            .style('color', '#fff');
+            .style('color', '#fff')
+            .style('overflow', 'hidden');
 
         // See : https://d3-graph-gallery.com/graph/connectedscatter_tooltip.html
         function onMouseOver(_event, d) {
+            let backgroundColor = '';
+            if (d.label < 12 && d.value <= 80) {
+                backgroundColor = '#EE3FA2';
+            } else if (d.label < 24 && d.value <= 60) {
+                backgroundColor = '#EE3FA2';
+            } else if (d.label < 36 && d.value <= 40) {
+                backgroundColor = '#EE3FA2';
+            } else if (d.label < 48 && d.value <= 20) {
+                backgroundColor = '#EE3FA2';
+            } else {
+                backgroundColor = '#1B43E0';
+            }
+
             tooltip
                 .html(
                     `<div class="d3-tooltip-name">
-                        ${d.label}
+                    ${d.label}
                     </div>
                     <div class="d3-tooltip-label">
-                        <div class="d3-tooltip-color" style="background-color: #EE3FA2">
+                        <div class="d3-tooltip-color" style="background-color: ${backgroundColor}">
                             <span></span>
                         </div>
                         <span class="d3-tooltip-value">${d.label}:</span>${d.value.toLocaleString()}
@@ -218,6 +227,7 @@ export default function MixedChart() {
             .attr('cy', (d) => yScale(d.value))
             .attr('r', 6)
             .attr('fill', (d, i) => {
+                console.log(d.label, i);
                 if (i < 12 && d.value <= 80) {
                     return '#EE3FA2';
                 } else if (i < 24 && d.value <= 60) {
@@ -236,5 +246,17 @@ export default function MixedChart() {
             .on('mouseleave', onMouseLeave);
     }, []);
 
-    return <div style={{ backgroundColor: '#fff', borderRadius: 4 }} ref={mixedChart} id="mixed-chart-canvas" />;
+    return (
+        <div
+            style={{
+                display: 'flex',
+                alitngnItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#fff',
+                borderRadius: 4
+            }}
+            ref={mixedChart}
+            id="multi-line-chart-canvas"
+        />
+    );
 }
