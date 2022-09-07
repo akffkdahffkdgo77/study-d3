@@ -6,6 +6,7 @@ import MixedChart from '../components/MixedChart';
 import MultiLineChart from '../components/MultiLineChart';
 import StackedBarChart from '../components/StackedBarChart';
 import { barData, barOptions } from '../constants/bar';
+import { bubbleData, bubbleOptions } from '../constants/bubble';
 import { groupedData, groupedOptions } from '../constants/groupedBar';
 import { lineData, lineOptions } from '../constants/line';
 import { multiLineData, multiLineOptions } from '../constants/multiLine';
@@ -18,19 +19,19 @@ function App() {
             <h1 style={{ width: '100%', textAlign: 'center', color: '#fff', marginTop: 0 }}>
                 Common Chart Clone Coding
             </h1>
-            <MixedChart />
-            {/* <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', columnGap: 50, padding: 50 }}>
+            {/* <MixedChart /> */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', columnGap: 50, padding: 50 }}>
                 <BarChart data={barData} options={barOptions} />
                 <StackedBarChart data={stackedData} options={stackedOptions} />
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', columnGap: 50, padding: 50 }}>
                 <GroupBarChart data={groupedData} options={groupedOptions} />
-                <BubbleChart />
+                <BubbleChart data={bubbleData} options={bubbleOptions} />
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', columnGap: 50, padding: 50 }}>
                 <LineChart data={lineData} options={lineOptions} />
                 <MultiLineChart data={multiLineData} options={multiLineOptions} />
-            </div> */}
+            </div>
         </div>
     );
 }
