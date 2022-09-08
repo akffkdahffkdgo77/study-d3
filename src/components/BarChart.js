@@ -72,7 +72,7 @@ export default function BarChart({ data, options }) {
                         <span class="d3-tooltip-value">totalCount:</span>${data.value.toLocaleString()}
                     </div>`
                 )
-                .style('visibility', 'visible');
+                .style('opacity', '1');
             d3.select(this).transition().attr('fill', 'rgba(54, 162, 235, 0.5)');
         }
 
@@ -81,7 +81,7 @@ export default function BarChart({ data, options }) {
         }
 
         function mouseLeave() {
-            tooltip.html(``).style('visibility', 'hidden');
+            tooltip.html(``).style('opacity', '0');
             d3.select(this).transition().attr('fill', options.colors);
         }
 

@@ -98,7 +98,7 @@ export default function GroupBarChart({ data, options }) {
                         <span class="d3-tooltip-value">${d.key}: </span>${d.value.toLocaleString()}
                     </div>`
                 )
-                .style('visibility', 'visible');
+                .style('opacity', '1');
         }
 
         function mouseMove(event, _d) {
@@ -106,7 +106,7 @@ export default function GroupBarChart({ data, options }) {
         }
 
         function mouseLeave(_event, _d) {
-            tooltip.html(``).style('visibility', 'hidden');
+            tooltip.html(``).style('opacity', '0');
         }
 
         animateBar({

@@ -95,7 +95,7 @@ export default function StackedBarChart({ data, options }) {
                         <span class="d3-tooltip-value">${categoryName}: </span>${categoryValue.toLocaleString()}
                     </div>`
                 )
-                .style('visibility', 'visible');
+                .style('opacity', '1');
         }
 
         function mouseMove(event, _d) {
@@ -103,7 +103,7 @@ export default function StackedBarChart({ data, options }) {
         }
 
         function mouseLeave(_event, _d) {
-            tooltip.html(``).style('visibility', 'hidden');
+            tooltip.html(``).style('opacity', '0');
         }
 
         animateBar({

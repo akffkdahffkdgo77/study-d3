@@ -89,7 +89,7 @@ export default function MultiLineChart({ data, options }) {
                         <span class="d3-tooltip-value">${d.label}:</span>${d.value.toLocaleString()}
                     </div>`
                 )
-                .style('visibility', 'visible');
+                .style('opacity', '1');
         }
 
         function onMouseMove(event, _d) {
@@ -97,7 +97,7 @@ export default function MultiLineChart({ data, options }) {
         }
 
         function onMouseLeave(_event, _d) {
-            tooltip.style('visibility', 'hidden');
+            tooltip.style('opacity', '0');
         }
 
         // 라인 그리기

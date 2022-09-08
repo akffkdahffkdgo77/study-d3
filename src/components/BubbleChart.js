@@ -1,7 +1,7 @@
 /* eslint-disable no-sparse-arrays */
 import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import { createCanvas } from '../utils';
+import { createAxis, createCanvas } from '../utils';
 
 // const width = 1000;
 // const height = 800;
@@ -47,120 +47,90 @@ export default function BubbleChart({ data, options }) {
             tooltipOptions: options.tooltip
         });
 
-        // SVG 추가하기
-        // const svg = d3
-        //     .select(bubbleChart.current)
-        //     .append('svg')
-        //     .attr('width', width)
-        //     .attr('height', height)
-        //     .attr('viewBox', [0, 0, width, height])
-        //     .attr('style', 'max-width: 100%; height: auto; height: intrinsic;')
-        //     .attr('font-family', 'sans-serif')
-        //     .attr('font-size', 10)
-        //     .style('-webkit-tap-highlight-color', 'transparent');
+        const { scale: xScale } = createAxis({
+            graph,
+            type: 'linear',
+            axisType: 'x',
+            domain: d3.extent(datasets, (d) => d.x),
+            range: [0, graphWidth],
+            draw: true,
+            options: { tickSize: graphHeight, tickPadding: 10 }
+        });
 
-        // GRAPH 추가하기
-        // const graph = svg
-        //     .append('g')
-        //     .attr('width', graphWidth)
-        //     .attr('height', graphHeight)
-        //     // translate를 해서 그래프가 전체 캔버스의 중심에서 그려지도록 설정
-        //     .attr('transform', `translate(${ml}, ${mt})`);
-
-        // X축 설정하기
-        const xAxisG = graph.append('g');
-        const xScale = d3
-            .scaleLinear()
-            .domain(d3.extent(datasets, (d) => d.x))
-            .nice()
-            .range([0, graphWidth]);
-        const xAxis = d3.axisBottom(xScale).tickSize(graphHeight).tickPadding(10);
-
-        // Y축 설정하기
-        const yAxisG = graph.append('g');
-        const yScale = d3
-            .scaleLinear()
-            .domain(d3.extent(datasets, (d) => d.y))
-            .nice()
-            .range([graphHeight, 0]);
-        const yAxis = d3.axisLeft(yScale);
+        const { scale: yScale } = createAxis({
+            graph,
+            type: 'linear',
+            axisType: 'y',
+            domain: d3.extent(datasets, (d) => d.y),
+            range: [graphHeight, 0],
+            draw: true,
+            options: { graphWidth }
+        });
 
         // Circle Radius 설정하기
-        const zScale = d3
-            .scaleLinear()
-            .domain(d3.extent(datasets, (d) => d.z))
-            .range([1, 50]);
-
-        // 축 UI
-        xAxisG
-            .call(xAxis)
-            .call((g) => g.select('.domain').remove())
-            .call((g) => g.selectAll('.tick').attr('stroke-opacity', 0.1));
-        yAxisG
-            .call(yAxis)
-            .call((g) => g.select('.domain').attr('stroke', '#eeeeee'))
-            .call((g) => g.selectAll('.tick').attr('stroke-opacity', 0.1))
-            .call((g) => g.selectAll('.tick line').clone().attr('x2', graphWidth).attr('stroke-opacity', 0.1));
+        const { scale: zScale } = createAxis({
+            graph,
+            type: 'linear',
+            axisType: 'y',
+            domain: d3.extent(datasets, (d) => d.z),
+            range: [1, 25],
+            draw: false,
+            options: { graphWidth }
+        });
 
         // Bubble Colors
-        const myColor = d3.scaleOrdinal().domain([0, 1, 2, 3, 4, 5, 6, 7]).range(d3.schemeSet2);
+        const { scale: colors } = createAxis({
+            graph,
+            type: 'color',
+            domain: [0, 1, 2, 3, 4, 5, 6, 7],
+            range: d3.schemeSet2
+        });
 
-        // TOOLTIP UI 설정하기
-        // const tooltip = d3
-        //     .select(bubbleChart.current)
-        //     .append('div')
-        //     .attr('class', 'd3-tooltip')
-        //     .style('position', 'absolute')
-        //     .style('z-index', '10')
-        //     .style('min-width', '120px')
-        //     .style('border-radius', '4px')
-        //     .style('color', '#fff')
-        //     .style('overflow', 'hidden')
-        //     .style('visibility', 'hidden');
-
-        const onEnter = function (event, d) {
-            const index = data.indexOf(d);
-
+        const onMouseOver = function (event, d) {
+            const index = datasets.indexOf(d);
             tooltip
-                .style('visibility', 'visible')
+                .style('opacity', '1')
                 .html(
                     `<div class="d3-tooltip-name">
                         ${d?.x}
                     </div>
                     <div class="d3-tooltip-label">
-                        <div class="d3-tooltip-color" style="background-color: ${myColor(index)}">
+                        <div class="d3-tooltip-color" style="background-color: ${colors(index)}">
                             <span></span>
                         </div>
                         <span class="d3-tooltip-value">totalCount:</span>${d?.x.toLocaleString()}
                     </div>`
                 )
                 .style('left', event.x / 2 + 'px')
-                .style('top', event.y / 2 + 30 + 'px');
-            tooltip.transition().duration(10);
+                .style('top', event.y / 2 + 30 + 'px')
+                .transition()
+                .duration(200);
         };
 
-        const onMove = function (event, _d) {
+        const onMouseMove = function (event, _d) {
             tooltip.style('top', event.pageY - 10 + 'px').style('left', event.pageX + 10 + 'px');
         };
 
-        const onLeave = function (_event, _d) {
-            tooltip.transition().duration(10).style('visibility', 'hidden');
+        const onMouseLeave = function (_event, _d) {
+            tooltip.transition().duration(10).style('opacity', '0');
         };
 
         graph
+            .append('g')
             .selectAll()
             .data(datasets)
             .join('circle')
+            .attr('class', 'bubbles')
             .attr('cx', (d) => xScale(d.x))
             .attr('cy', (d) => yScale(d.y))
             .attr('r', (d) => zScale(d.z))
-            .style('fill', (_d, i) => myColor(i))
+            .style('fill', (_d, i) => colors(i))
             .style('opacity', '0.5')
             .attr('stroke', 'white')
             .style('stroke-width', '2px')
-            .on('mouseover', onEnter)
-            .on('mousemove', onMove)
-            .on('mouseleave', onLeave);
+            .on('mouseover', onMouseOver)
+            .on('mousemove', onMouseMove)
+            .on('mouseleave', onMouseLeave);
     }, [data, options]);
 
     return (
