@@ -1,16 +1,10 @@
-import BarChart from '../components/BarChart';
-import BubbleChart from '../components/BubbleChart';
-import GroupBarChart from '../components/GroupedBarChart';
-import LineChart from '../components/LineChart';
-import MixedChart from '../components/MixedChart';
-import MultiLineChart from '../components/MultiLineChart';
-import StackedBarChart from '../components/StackedBarChart';
-import { barData, barOptions } from '../constants/bar';
-import { bubbleData, bubbleOptions } from '../constants/bubble';
-import { groupedData, groupedOptions } from '../constants/groupedBar';
-import { lineData, lineOptions } from '../constants/line';
-import { multiLineData, multiLineOptions } from '../constants/multiLine';
-import { stackedData, stackedOptions } from '../constants/stackedBar';
+import AreaChart from '../area/AreaChart';
+import BarChart from '../bar/BarChart';
+import GroupedBarChart from '../bar/GroupedBarChart';
+import StackedBarChart from '../bar/StackedBarChart';
+import BubbleChart from '../bubble/BubbleChart';
+import LineChart from '../line/LineChart';
+import MultiLinesChart from '../line/MultiLinesChart';
 
 // https://github.com/d3/d3/blob/main/API.md#d3-api-reference
 function App() {
@@ -19,18 +13,18 @@ function App() {
             <h1 style={{ width: '100%', textAlign: 'center', color: '#fff', marginTop: 0 }}>
                 Common Chart Clone Coding
             </h1>
-            {/* <MixedChart /> */}
+            <AreaChart />
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', columnGap: 50, padding: 50 }}>
-                <BarChart data={barData} options={barOptions} />
-                <StackedBarChart data={stackedData} options={stackedOptions} />
+                <BarChart />
+                <StackedBarChart />
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', columnGap: 50, padding: 50 }}>
-                <GroupBarChart data={groupedData} options={groupedOptions} />
-                <BubbleChart data={bubbleData} options={bubbleOptions} />
+                <GroupedBarChart />
+                <BubbleChart />
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', columnGap: 50, padding: 50 }}>
-                <LineChart data={lineData} options={lineOptions} />
-                <MultiLineChart data={multiLineData} options={multiLineOptions} />
+                <LineChart />
+                <MultiLinesChart />
             </div>
         </div>
     );
