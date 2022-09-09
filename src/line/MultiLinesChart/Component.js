@@ -23,7 +23,8 @@ export default function Component({ data, options }) {
 
         // Default 설정
         const { category, datasets } = data;
-        const graphWidth = lineChart.current.clientWidth - options.dimensions.margin[1] - options.dimensions.margin[3];
+        const currentWidth = lineChart.current.clientWidth;
+        const graphWidth = currentWidth - options.dimensions.margin[1] - options.dimensions.margin[3];
         const graphHeight = options.dimensions.height - options.dimensions.margin[0] - options.dimensions.margin[2];
 
         // Data 형식 맞추기
@@ -35,9 +36,11 @@ export default function Component({ data, options }) {
         // SVG 추가하기
         const graph = createCanvas({
             canvas: lineChart.current,
-            width: lineChart.current.clientWidth + Math.floor(options.dimensions.margin[3] / 2),
-            height: options.dimensions.height,
-            margin: options.dimensions.margin
+            options: {
+                width: currentWidth + Math.floor(options.dimensions.margin[3] / 2),
+                height: options.dimensions.height,
+                margin: options.dimensions.margin
+            }
         });
 
         // X축, Y축 설정하기

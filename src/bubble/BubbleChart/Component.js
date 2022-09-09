@@ -22,16 +22,18 @@ export default function Component({ data, options }) {
         rendered.current = false;
 
         const { datasets } = data;
-        const graphWidth =
-            bubbleChart.current.clientWidth - options.dimensions.margin[1] - options.dimensions.margin[3];
+        const currentWidth = bubbleChart.current.clientWidth;
+        const graphWidth = currentWidth - options.dimensions.margin[1] - options.dimensions.margin[3];
         const graphHeight = options.dimensions.height - options.dimensions.margin[0] - options.dimensions.margin[2];
 
         // Canvas + Graph 설정
         const graph = createCanvas({
             canvas: bubbleChart.current,
-            width: bubbleChart.current.clientWidth + Math.floor(options.dimensions.margin[3] / 2),
-            height: options.dimensions.height,
-            margin: options.dimensions.margin
+            options: {
+                width: currentWidth + Math.floor(options.dimensions.margin[3] / 2),
+                height: options.dimensions.height,
+                margin: options.dimensions.margin
+            }
         });
 
         const { scale: xScale } = createAxis({

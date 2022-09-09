@@ -23,16 +23,18 @@ export default function Component({ data, options }) {
 
         // Default 설정
         const { xLabels, category, datasets } = data;
-        const graphWidth = barChart.current.clientWidth - options.dimensions.margin[1] - options.dimensions.margin[3];
+        const currentWidth = barChart.current.clientWidth;
+        const graphWidth = currentWidth - options.dimensions.margin[1] - options.dimensions.margin[3];
         const graphHeight = options.dimensions.height - options.dimensions.margin[0] - options.dimensions.margin[2];
 
         // Canvas + Graph 설정
         const graph = createCanvas({
             canvas: barChart.current,
-            width: barChart.current.clientWidth + Math.floor(options.dimensions.margin[3] / 2),
-            height: options.dimensions.height,
-            margin: options.dimensions.margin,
-            tooltipOptions: options.tooltip
+            options: {
+                width: currentWidth + Math.floor(options.dimensions.margin[3] / 2),
+                height: options.dimensions.height,
+                margin: options.dimensions.margin
+            }
         });
 
         // X축, Y축 설정하기

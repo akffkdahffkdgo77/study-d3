@@ -17,18 +17,17 @@ export default function Component({ data, options }) {
         rendered.current = false;
 
         const { datasets, xLabels } = data;
-        const graphWidth =
-            (areaChart.current?.clientWidth || options.dimensions.height) -
-            options.dimensions.margin[1] -
-            options.dimensions.margin[3];
+        const currentWidth = areaChart.current.clientWidth;
+        const graphWidth = currentWidth - options.dimensions.margin[1] - options.dimensions.margin[3];
         const graphHeight = options.dimensions.height - options.dimensions.margin[0] - options.dimensions.margin[2];
 
         const graph = createCanvas({
             canvas: areaChart.current,
-            width: areaChart.current.clientWidth + Math.floor(options.dimensions.margin[3] / 2),
-            height: options.dimensions.height,
-            margin: options.dimensions.margin,
-            tooltipOptions: options.tooltip
+            options: {
+                width: currentWidth + Math.floor(options.dimensions.margin[3] / 2),
+                height: options.dimensions.height,
+                margin: options.dimensions.margin
+            }
         });
 
         // DOMAIN

@@ -7,12 +7,17 @@ import { drawBandXGridLines, drawXGridLines, drawYGridLines } from './gridLines'
 /**
  * SVG 생성
  * @param {HTMLElement} canvas HTML element
- * @param {number} width svg width
- * @param {number} height svg height
- * @param {number[]} margin [marginTop, marginRight, marginBottom, marginLeft]
+ * @param {object} options width, height, margin, transform
  * @returns {SVGGElement} returns svg <g> element
  */
-export const createCanvas = ({ canvas, width, height, margin: [mt, mr, mb, ml] }) => {
+export const createCanvas = ({ canvas, options }) => {
+    const {
+        width,
+        height,
+        margin: [mt, mr, mb, ml],
+        transform
+    } = options;
+
     const graphWidth = width - mr - ml;
     const graphHeight = height - mt - mb;
 
@@ -27,7 +32,7 @@ export const createCanvas = ({ canvas, width, height, margin: [mt, mr, mb, ml] }
         .append('g')
         .attr('width', graphWidth)
         .attr('height', graphHeight)
-        .attr('transform', `translate(${ml}, ${mt})`);
+        .attr('transform', transform || `translate(${ml}, ${mt})`);
 
     return graph;
 };
