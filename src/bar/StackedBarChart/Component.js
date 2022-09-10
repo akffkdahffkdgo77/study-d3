@@ -1,15 +1,17 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import { animateBar, createStackedBar } from '../utils/draw';
-import { createAxis, createCanvas, createToolTip } from '../../utils/settings';
+import { animateBar, createStackedBar } from 'bar/utils/draw';
+import { createAxis, createCanvas, createToolTip } from 'utils/settings';
+import { tooltipMouseLeave, tooltipMouseMove, tooltipMouseOver } from 'utils/tooltip';
 
 /**
  *  References :
  *  https://d3-graph-gallery.com/graph/barplot_stacked_basicWide.html
  *  https://d3-graph-gallery.com/graph/barplot_stacked_hover.html
  */
+
 export default function Component({ data, options }) {
-    const barChart = useRef(null);
+    const stackedBarChart = useRef(null);
     const rendered = useRef(true);
 
     useEffect(() => {
@@ -21,13 +23,13 @@ export default function Component({ data, options }) {
 
         // Default 설정
         const { xLabels, category, datasets } = data;
-        const currentWidth = barChart.current.clientWidth;
+        const currentWidth = stackedBarChart.current.clientWidth;
         const graphWidth = currentWidth - options.dimensions.margin[1] - options.dimensions.margin[3];
         const graphHeight = options.dimensions.height - options.dimensions.margin[0] - options.dimensions.margin[2];
 
-        // Canvas + Graph 설정
+        // SVG 추가하기
         const graph = createCanvas({
-            canvas: barChart.current,
+            canvas: stackedBarChart.current,
             options: {
                 width: currentWidth + Math.floor(options.dimensions.margin[3] / 2),
                 height: options.dimensions.height,
@@ -35,7 +37,7 @@ export default function Component({ data, options }) {
             }
         });
 
-        // X축, Y축 설정하기
+        // X Axis
         const { scale: xScale } = createAxis({
             graph,
             type: 'band',
@@ -49,6 +51,7 @@ export default function Component({ data, options }) {
             }
         });
 
+        // Y Axis
         const { scale: yScale } = createAxis({
             graph,
             type: 'linear',
@@ -69,52 +72,58 @@ export default function Component({ data, options }) {
         // Category별 색상 설정하기
         const { scale: color } = createAxis({ graph, type: 'ordinal', domain: category, range: options.colors });
 
-        // Category별로 stack을 만듬
-        const stackedData = d3.stack().keys(category)(datasets);
-
-        // Stacked Bar Graph 그리기
-        createStackedBar({
-            graph,
-            data: stackedData,
-            x: (d) => xScale(d.data.label),
-            y: yScale(0),
-            color: (d) => color(d.key),
-            options: { width: xScale.bandwidth(), height: graphHeight - yScale(0) },
-            mouseOver,
-            mouseMove,
-            mouseLeave
-        });
-
+        // TOOLTIP
         const tooltip = createToolTip({ tooltipOptions: options.tooltip });
 
         function mouseOver(_event, d) {
             const categoryName = d3.select(this.parentNode).datum().key; // 현재 선택한 데이터의 서브 그룹명
             const categoryValue = d.data[categoryName]; // 데이터 값
-            tooltip
-                .html(
-                    `<div class="d3-tooltip-name">${d.data.label}</div>
-                    <div class="d3-tooltip-label">
-                        <div class="d3-tooltip-color" style="background-color: ${color(categoryName)}">
-                            <span></span>
-                        </div>
-                        <span class="d3-tooltip-value">${categoryName}: </span>${categoryValue.toLocaleString()}
-                    </div>`
-                )
-                .style('opacity', '1');
+            tooltipMouseOver({
+                tooltip,
+                html: ` <div class="d3-tooltip-name">${d.data.label}</div>
+                        <div class="d3-tooltip-label">
+                            <div class="d3-tooltip-color" style="background-color: ${color(categoryName)}">
+                                <span></span>
+                            </div>
+                            <span class="d3-tooltip-value">${categoryName}: </span>${categoryValue.toLocaleString()}
+                        </div>`
+            });
         }
 
         function mouseMove(event, _d) {
-            tooltip.style('top', event.pageY - 10 + 'px').style('left', event.pageX + 10 + 'px');
+            tooltipMouseMove({ tooltip, event });
         }
 
         function mouseLeave(_event, _d) {
-            tooltip.html(``).style('opacity', '0');
+            tooltipMouseLeave({ tooltip });
         }
 
+        // Category별로 stack을 만듬
+        const stackedData = d3.stack().keys(category)(datasets);
+
+        createStackedBar({
+            graph,
+            data: stackedData,
+            coords: {
+                x: (d) => xScale(d.data.label),
+                y: yScale(0)
+            },
+            options: {
+                color: (d) => color(d.key),
+                width: xScale.bandwidth(),
+                height: graphHeight - yScale(0)
+            },
+            mouseOver,
+            mouseMove,
+            mouseLeave
+        });
+
         animateBar({
-            graph: barChart.current,
-            y: (d) => yScale(d[1]),
-            height: (d) => yScale(d[0]) - yScale(d[1])
+            graph: stackedBarChart.current,
+            options: {
+                y: (d) => yScale(d[1]),
+                height: (d) => yScale(d[0]) - yScale(d[1])
+            }
         });
     }, [data, options]);
 
@@ -127,7 +136,7 @@ export default function Component({ data, options }) {
                 backgroundColor: '#fff',
                 borderRadius: 4
             }}
-            ref={barChart}
+            ref={stackedBarChart}
             id="stacked-bar-chart-canvas"
         />
     );
