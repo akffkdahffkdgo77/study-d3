@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import { animateBar, createBar } from '../utils/draw';
-import { createAxis, createCanvas, createToolTip } from '../../utils/settings';
-import { tooltipMouseLeave, tooltipMouseMove, tooltipMouseOver } from '../../utils/tooltip';
+import { animateBar, createBar } from 'bar/utils/draw';
+import { createAxis, createCanvas, createToolTip } from 'utils/settings';
+import { tooltipMouseLeave, tooltipMouseMove, tooltipMouseOver } from 'utils/tooltip';
 
 export default function Component({ data, options }) {
     const barChart = useRef(null);
@@ -18,29 +18,33 @@ export default function Component({ data, options }) {
         // Default 설정
         const { xLabels, datasets } = data;
         const currentWidth = barChart.current.clientWidth;
+
+        const width = currentWidth + Math.floor(options.dimensions.margin[3] / 2);
+        const height = options.dimensions.height;
         const graphWidth = currentWidth - options.dimensions.margin[1] - options.dimensions.margin[3];
         const graphHeight = options.dimensions.height - options.dimensions.margin[0] - options.dimensions.margin[2];
 
-        // Canvas + Graph 설정
+        // SVG 추가하기
         const graph = createCanvas({
             canvas: barChart.current,
-            options: {
-                width: currentWidth + Math.floor(options.dimensions.margin[3] / 2),
-                height: options.dimensions.height,
-                margin: options.dimensions.margin
-            }
+            options: { width, height, margin: options.dimensions.margin }
         });
 
-        // X축, Y축 설정하기
+        // X Axis
         const { scale: xScale } = createAxis({
             graph,
             type: 'band',
             domain: xLabels,
             range: [0, graphWidth],
             draw: true,
-            options: { padding: 0.25, tickSize: graphHeight, tickPadding: 10 }
+            options: {
+                padding: 0.25,
+                tickSize: graphHeight,
+                tickPadding: 10
+            }
         });
 
+        // Y Axis
         const { scale: yScale } = createAxis({
             graph,
             type: 'linear',
@@ -51,7 +55,9 @@ export default function Component({ data, options }) {
             options: { graphWidth }
         });
 
+        // TOOLTIP
         const tooltip = createToolTip({ tooltipOptions: options.tooltip });
+
         function mouseOver(_event, d) {
             tooltipMouseOver({
                 tooltip,
@@ -65,7 +71,6 @@ export default function Component({ data, options }) {
                             <span class="d3-tooltip-value">totalCount:</span>${d.value.toLocaleString()}
                         </div>`
             });
-
             d3.select(this).transition().attr('fill', 'rgba(54, 162, 235, 0.5)');
         }
 
@@ -81,8 +86,10 @@ export default function Component({ data, options }) {
         createBar({
             graph,
             data: datasets,
-            x: (d) => xScale(d.label),
-            y: yScale(0),
+            coords: {
+                x: (d) => xScale(d.label),
+                y: yScale(0)
+            },
             options: {
                 width: xScale.bandwidth(),
                 height: graphHeight - yScale(0),
@@ -95,8 +102,10 @@ export default function Component({ data, options }) {
 
         animateBar({
             graph: barChart.current,
-            y: (d) => yScale(d.value),
-            height: (d) => graphHeight - yScale(d.value)
+            options: {
+                y: (d) => yScale(d.value),
+                height: (d) => graphHeight - yScale(d.value)
+            }
         });
     }, [data, options]);
 

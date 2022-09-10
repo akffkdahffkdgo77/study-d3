@@ -1,4 +1,3 @@
-// 데이터 형식 { label : '', value : '' }[]
 const dummy = [
     '전국',
     '서울',
