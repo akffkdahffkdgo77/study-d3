@@ -1,11 +1,15 @@
 import { useEffect, useRef } from 'react';
 
 import * as d3 from 'd3';
-import { createAxis, createCanvas, createToolTip } from '../../utils/settings';
-import { tooltipMouseLeave, tooltipMouseMove, tooltipMouseOver } from '../../utils/tooltip';
-import { createDonut } from '../utils/draw';
+import { createAxis, createCanvas, createToolTip } from 'utils/settings';
+import { tooltipMouseLeave, tooltipMouseMove, tooltipMouseOver } from 'utils/tooltip';
+import { createDonut } from 'pie/utils/draw';
 
-// See : https://d3-graph-gallery.com/graph/donut_basic.html
+/**
+ *  References :
+ *  https://d3-graph-gallery.com/graph/donut_basic.html
+ */
+
 export default function Component({ data, options }) {
     const donutChart = useRef(null);
     const rendered = useRef(true);
@@ -16,10 +20,12 @@ export default function Component({ data, options }) {
         }
         rendered.current = false;
 
+        // Default 설정
         const { datasets } = data;
         const width = donutChart.current.clientWidth + Math.floor(options.dimensions.margin[3] / 2);
         const height = options.dimensions.height;
 
+        // SVG 추가하기
         const graph = createCanvas({
             canvas: donutChart.current,
             options: {
@@ -30,6 +36,7 @@ export default function Component({ data, options }) {
             }
         });
 
+        // Donut Colors
         const { scale: colors } = createAxis({
             graph,
             type: 'ordinal',
@@ -37,7 +44,9 @@ export default function Component({ data, options }) {
             range: options.colors
         });
 
+        // TOOLTIP
         const tooltip = createToolTip({ tooltipOptions: options.tooltip });
+
         function onMouseOver(_event, d) {
             tooltipMouseOver({
                 tooltip,

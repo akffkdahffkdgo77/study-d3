@@ -16,6 +16,7 @@ const data = Array.from(Array(47)).map((_, i) => ({
  *  References :
  *  https://d3-graph-gallery.com/graph/connectedscatter_multi.html
  */
+
 export default function ScatterLineChart() {
     const mixedChart = useRef(null);
     const rendered = useRef(true);
