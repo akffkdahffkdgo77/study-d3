@@ -1,10 +1,9 @@
 import * as d3 from 'd3';
 
 /**
- *
- * @param {d3.AxisScale} scale The scale to be used for axis generation.
- * @param {object} options Tick options (tickSize, tickPadding ...)
- * @returns {d3.Axis} returns x axis for d3.scaleBand()
+ *  @param {d3.AxisScale} scale The scale to be used for axis generation.
+ *  @param {object} options Tick options (tickSize, tickPadding ...)
+ *  @returns {d3.Axis} returns x axis for d3.scaleBand()
  */
 export const createBandXAxis = ({ scale, options }) => {
     return d3
@@ -14,10 +13,9 @@ export const createBandXAxis = ({ scale, options }) => {
 };
 
 /**
- *
- * @param {d3.AxisScale} scale The scale to be used for axis generation.
- * @param {object} options Tick options (tickSize, tickPadding ...)
- * @returns {d3.Axis} returns x axis for d3.linearScale()
+ *  @param {d3.AxisScale} scale The scale to be used for axis generation.
+ *  @param {object} options Tick options (tickSize, tickPadding ...)
+ *  @returns {d3.Axis} returns x axis for d3.linearScale()
  */
 export const createXAxis = ({ scale, options }) => {
     return d3

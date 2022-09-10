@@ -1,11 +1,11 @@
-import AreaChart from '../area/AreaChart';
-import BarChart from '../bar/BarChart';
-import GroupedBarChart from '../bar/GroupedBarChart';
-import StackedBarChart from '../bar/StackedBarChart';
-import BubbleChart from '../bubble/BubbleChart';
-import LineChart from '../line/LineChart';
-import MultiLinesChart from '../line/MultiLinesChart';
-import DonutChart from '../pie/DonutChart';
+import AreaChart from 'area/AreaChart';
+import BarChart from 'bar/BarChart';
+import GroupedBarChart from 'bar/GroupedBarChart';
+import StackedBarChart from 'bar/StackedBarChart';
+import BubbleChart from 'bubble/BubbleChart';
+import LineChart from 'line/LineChart';
+import MultiLinesChart from 'line/MultiLinesChart';
+import DonutChart from 'pie/DonutChart';
 
 // https://github.com/d3/d3/blob/main/API.md#d3-api-reference
 function App() {

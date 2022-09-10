@@ -1,11 +1,17 @@
 import { useEffect, useRef } from 'react';
 
 import * as d3 from 'd3';
-import { createAxis, createCanvas, createToolTip } from '../../utils/settings';
-import { createArea, createDots, createLine } from '../utils/draw';
-import { tooltipMouseLeave, tooltipMouseMove, tooltipMouseOver } from '../../utils/tooltip';
+import { createAxis, createCanvas, createToolTip } from 'utils/settings';
+import { createArea } from 'area/utils/draw';
+import { tooltipMouseLeave, tooltipMouseMove, tooltipMouseOver } from 'utils/tooltip';
+import { createDots } from 'utils/dot';
+import { createLine } from 'utils/line';
 
-// See : https://d3-graph-gallery.com/graph/area_lineDot.html
+/**
+ *  References:
+ *  https://d3-graph-gallery.com/graph/area_lineDot.html
+ */
+
 export default function Component({ data, options }) {
     const areaChart = useRef(null);
     const rendered = useRef(true);
@@ -95,8 +101,8 @@ export default function Component({ data, options }) {
         createArea({
             graph,
             data: datasets,
-            x: (_d, i) => xScale(datasets[i].label),
-            y: {
+            coords: {
+                x: (_d, i) => xScale(datasets[i].label),
                 y0: graphHeight,
                 y1: (_d, i) => yScale(datasets[i].value)
             },
@@ -110,21 +116,27 @@ export default function Component({ data, options }) {
         createLine({
             graph,
             data: datasets,
-            x: (_d, i) => xScale(datasets[i].label),
-            y: (_d, i) => yScale(datasets[i].value),
+            coords: {
+                x: (_d, i) => xScale(datasets[i].label),
+                y: (_d, i) => yScale(datasets[i].value)
+            },
             options: {
                 fill: 'none',
                 stroke: options.colors,
-                strokeWidth: 4
+                'stroke-width': 4
             }
         });
 
         createDots({
             graph,
             data: datasets,
-            cx: (d) => xScale(d.label),
-            cy: (d) => yScale(d.value),
-            r: 20,
+            options: {
+                cx: (d) => xScale(d.label),
+                cy: (d) => yScale(d.value),
+                r: 20,
+                fill: 'transparent',
+                stroke: 'none'
+            },
             onMouseOver,
             onMouseMove,
             onMouseLeave

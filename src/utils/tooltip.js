@@ -1,5 +1,5 @@
 export const tooltipMouseOver = ({ tooltip, html }) => {
-    tooltip.html(html).style('opacity', '1');
+    tooltip.html(html).style('opacity', '1').transition().duration(200);
 };
 
 export const tooltipMouseMove = ({ tooltip, event }) => {
@@ -7,5 +7,5 @@ export const tooltipMouseMove = ({ tooltip, event }) => {
 };
 
 export const tooltipMouseLeave = ({ tooltip }) => {
-    tooltip.html(``).style('opacity', '0');
+    tooltip.html(``).style('opacity', '0').transition().duration(200);
 };
