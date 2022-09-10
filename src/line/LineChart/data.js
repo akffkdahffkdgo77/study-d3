@@ -11,6 +11,17 @@ const dummy = [
     { label: '2022-05-10T00:00:00.000Z', value: Math.floor(Math.random() * (1000000 - 100)) + 100 }
 ];
 
+const tooltipOptions = {
+    position: 'absolute',
+    top: 0,
+    'z-index': 10,
+    'min-width': '120px',
+    'border-radius': '4px',
+    color: '#fff',
+    opacity: '0',
+    overflow: 'hidden'
+};
+
 const colors = ['#D8ECFF', '#FFDEE3', '#FFF6E1', '#E0F3F2', '#E8DDFF', '#FFEDDD'];
 
 export const data = {
@@ -24,5 +35,6 @@ export const options = {
     dimensions: {
         height: 600,
         margin: [50, 0, 50, 70] // [mt, mr, mb, ml]
-    }
+    },
+    tooltip: tooltipOptions
 };
