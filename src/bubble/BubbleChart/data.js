@@ -25,7 +25,7 @@ export const options = {
     colors: colors[0],
     tooltip: tooltipOptions,
     dimensions: {
-        height: 500,
-        margin: [50, 50, 50, 50] // [mt, mr, mb, ml]
+        height: 600,
+        margin: [50, 20, 50, 50] // [mt, mr, mb, ml]
     }
 };

@@ -1,7 +1,8 @@
-/* eslint-disable no-sparse-arrays */
 import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import { createAxis, createCanvas, createToolTip } from '../../utils/settings';
+import { createAxis, createCanvas, createToolTip } from 'utils/settings';
+import { tooltipMouseLeave, tooltipMouseMove, tooltipMouseOver } from 'utils/tooltip';
+import { createDots } from 'utils/dot';
 
 /*
     References :
@@ -13,29 +14,27 @@ export default function Component({ data, options }) {
     const rendered = useRef(true);
 
     useEffect(() => {
-        // React.18 Strict Mode
-        // Prevent Render twice
         if (!rendered.current) {
             return;
         }
-
         rendered.current = false;
 
+        // Default 설정
         const { datasets } = data;
         const currentWidth = bubbleChart.current.clientWidth;
+
+        const width = currentWidth + Math.floor(options.dimensions.margin[3] / 2);
+        const height = options.dimensions.height;
         const graphWidth = currentWidth - options.dimensions.margin[1] - options.dimensions.margin[3];
         const graphHeight = options.dimensions.height - options.dimensions.margin[0] - options.dimensions.margin[2];
 
-        // Canvas + Graph 설정
+        // SVG 추가하기
         const graph = createCanvas({
             canvas: bubbleChart.current,
-            options: {
-                width: currentWidth + Math.floor(options.dimensions.margin[3] / 2),
-                height: options.dimensions.height,
-                margin: options.dimensions.margin
-            }
+            options: { width, height, margin: options.dimensions.margin }
         });
 
+        // X Axis
         const { scale: xScale } = createAxis({
             graph,
             type: 'linear',
@@ -46,6 +45,7 @@ export default function Component({ data, options }) {
             options: { tickSize: graphHeight, tickPadding: 10 }
         });
 
+        // Y Axis
         const { scale: yScale } = createAxis({
             graph,
             type: 'linear',
@@ -60,7 +60,7 @@ export default function Component({ data, options }) {
         const { scale: zScale } = createAxis({
             graph,
             type: 'linear',
-            axisType: 'y',
+            axisType: '',
             domain: d3.extent(datasets, (d) => d.z),
             range: [1, 25],
             draw: false,
@@ -75,52 +75,52 @@ export default function Component({ data, options }) {
             range: d3.schemeSet2
         });
 
+        // TOOLTIP
         const tooltip = createToolTip({ tooltipOptions: options.tooltip });
-        const onMouseOver = function (event, d) {
+
+        function onMouseOver(_event, d) {
             const index = datasets.indexOf(d);
-            tooltip
-                .style('opacity', '1')
-                .html(
-                    `<div class="d3-tooltip-name">
-                        ${d?.x}
-                    </div>
-                    <div class="d3-tooltip-label">
-                        <div class="d3-tooltip-color" style="background-color: ${colors(index)}">
+            tooltipMouseOver({
+                tooltip,
+                html: ` <div class="d3-tooltip-name">
+                            ${d?.x}
+                        </div>
+                        <div class="d3-tooltip-label">
+                            <div class="d3-tooltip-color" style="background-color: ${colors(index)}">
                             <span></span>
                         </div>
-                        <span class="d3-tooltip-value">totalCount:</span>${d?.x.toLocaleString()}
-                    </div>`
-                )
-                .style('left', event.x / 2 + 'px')
-                .style('top', event.y / 2 + 30 + 'px')
-                .transition()
-                .duration(200);
-        };
+                            <span class="d3-tooltip-value">totalCount:</span>${d?.x.toLocaleString()}
+                        </div>`
+            });
+        }
 
-        const onMouseMove = function (event, _d) {
-            tooltip.style('top', event.pageY - 10 + 'px').style('left', event.pageX + 10 + 'px');
-        };
+        function onMouseMove(event, _d) {
+            tooltipMouseMove({ tooltip, event });
+        }
 
-        const onMouseLeave = function (_event, _d) {
-            tooltip.transition().duration(10).style('opacity', '0');
-        };
+        function onMouseLeave(_event, _d) {
+            tooltipMouseLeave({ tooltip });
+        }
 
-        graph
-            .append('g')
-            .selectAll()
-            .data(datasets)
-            .join('circle')
-            .attr('class', 'bubbles')
-            .attr('cx', (d) => xScale(d.x))
-            .attr('cy', (d) => yScale(d.y))
-            .attr('r', (d) => zScale(d.z))
-            .style('fill', (_d, i) => colors(i))
-            .style('opacity', '0.5')
-            .attr('stroke', 'white')
-            .style('stroke-width', '2px')
-            .on('mouseover', onMouseOver)
-            .on('mousemove', onMouseMove)
-            .on('mouseleave', onMouseLeave);
+        const sorted = datasets.sort((x, y) => d3.descending(x.z, y.z));
+
+        createDots({
+            graph,
+            data: sorted,
+            options: {
+                class: 'bubbles',
+                cx: (d) => xScale(d.x),
+                cy: (d) => yScale(d.y),
+                r: (d) => zScale(d.z),
+                fill: (_d, i) => colors(i),
+                opacity: 0.5,
+                stroke: 'white',
+                'stroke-width': 2
+            },
+            onMouseOver,
+            onMouseMove,
+            onMouseLeave
+        });
     }, [data, options]);
 
     return (
