@@ -1,29 +1,29 @@
 import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import { createLines } from '../utils/draw';
-import { createAxis, createCanvas, createToolTip } from '../../utils/settings';
+import { createLines } from 'line/utils/draw';
+import { createAxis, createCanvas, createToolTip } from 'utils/settings';
+import { createDots } from 'utils/dot';
+import { tooltipMouseLeave, tooltipMouseMove, tooltipMouseOver } from 'utils/tooltip';
 
 /**
  *  References :
  *  https://d3-graph-gallery.com/graph/connectedscatter_multi.html
+ *  https://d3-graph-gallery.com/graph/connectedscatter_tooltip.html
  */
 
 export default function Component({ data, options }) {
-    const lineChart = useRef(null);
+    const multiLineChart = useRef(null);
     const rendered = useRef(true);
 
     useEffect(() => {
-        // React.18 Strict Mode
-        // Prevent Render twice
         if (!rendered.current) {
             return;
         }
-
         rendered.current = false;
 
         // Default 설정
         const { category, datasets } = data;
-        const currentWidth = lineChart.current.clientWidth;
+        const currentWidth = multiLineChart.current.clientWidth;
         const graphWidth = currentWidth - options.dimensions.margin[1] - options.dimensions.margin[3];
         const graphHeight = options.dimensions.height - options.dimensions.margin[0] - options.dimensions.margin[2];
 
@@ -35,7 +35,7 @@ export default function Component({ data, options }) {
 
         // SVG 추가하기
         const graph = createCanvas({
-            canvas: lineChart.current,
+            canvas: multiLineChart.current,
             options: {
                 width: currentWidth + Math.floor(options.dimensions.margin[3] / 2),
                 height: options.dimensions.height,
@@ -43,7 +43,7 @@ export default function Component({ data, options }) {
             }
         });
 
-        // X축, Y축 설정하기
+        // X Axis
         const { scale: xScale } = createAxis({
             graph,
             type: 'linear',
@@ -58,65 +58,79 @@ export default function Component({ data, options }) {
             }
         });
 
+        // Y Axis
         const { scale: yScale } = createAxis({
             graph,
             type: 'linear',
             axisType: 'y',
-            domain: [
-                0,
-                d3.max(
-                    (function () {
-                        return category.map((category) => d3.max(datasets, (d) => d[category]));
-                    })()
-                )
-            ],
+            domain: [0, d3.max(category.map((category) => d3.max(datasets, (d) => d[category])))],
             range: [graphHeight, 0],
             draw: true,
             options: { graphWidth }
         });
 
+        // Colors
         const { scale: colors } = createAxis({ graph, type: 'ordinal', domain: category, range: options.colors });
 
+        // TOOLTIP
         const tooltip = createToolTip({ tooltipOptions: options.tooltip });
-        // See : https://d3-graph-gallery.com/graph/connectedscatter_tooltip.html
+
         function onMouseOver(_event, d) {
             const category = d3.select(this.parentNode).datum(); // 현재 선택한 데이터의 카테고리명 찾기
-            tooltip
-                .html(
-                    `<div class="d3-tooltip-name">
-                        ${category.name}
-                    </div>
-                    <div class="d3-tooltip-label">
-                        <div class="d3-tooltip-color" style="background-color: ${colors(category.name)}">
-                            <span></span>
+            tooltipMouseOver({
+                tooltip,
+                html: ` <div class="d3-tooltip-name">
+                            ${category.name}
                         </div>
-                        <span class="d3-tooltip-value">${d.label}:</span>${d.value.toLocaleString()}
-                    </div>`
-                )
-                .style('opacity', '1');
+                        <div class="d3-tooltip-label">
+                            <div class="d3-tooltip-color" style="background-color: ${colors(category.name)}">
+                                <span></span>
+                            </div>
+                            <span class="d3-tooltip-value">${d.label}:</span>${d.value.toLocaleString()}
+                        </div>`
+            });
         }
 
         function onMouseMove(event, _d) {
-            tooltip.style('top', event.pageY - 10 + 'px').style('left', event.pageX + 10 + 'px');
+            tooltipMouseMove({ tooltip, event });
         }
 
         function onMouseLeave(_event, _d) {
-            tooltip.style('opacity', '0');
+            tooltipMouseLeave({ tooltip });
         }
 
-        // 라인 그리기
-        const line = d3
-            .line()
-            .x((d) => xScale(d.label))
-            .y((d) => yScale(d.value));
-
+        // LINE
         createLines({
             graph,
             data: chartData,
-            x: (d) => xScale(d.label),
-            y: (d) => yScale(d.value),
-            d: (d) => line(d.values),
-            fill: (d) => colors(d.name),
+            coords: {
+                x: (d) => xScale(d.label),
+                y: (d) => yScale(d.value)
+            },
+            options: {
+                fill: 'none',
+                stroke: (d) => colors(d.name),
+                'stroke-width': 4
+            }
+        });
+
+        // Point 추가가 추가될 group을 category별로 생성
+        const dotG = graph
+            .selectAll()
+            .data(chartData)
+            .join('g')
+            .style('fill', (d) => colors(d.name));
+
+        // CIRCLE
+        createDots({
+            graph: dotG,
+            data: (d) => d.values,
+            options: {
+                cx: (d) => xScale(d.label),
+                cy: (d) => yScale(d.value),
+                r: 5,
+                stroke: 'white'
+            },
             onMouseOver,
             onMouseMove,
             onMouseLeave
@@ -132,7 +146,7 @@ export default function Component({ data, options }) {
                 backgroundColor: '#fff',
                 borderRadius: 4
             }}
-            ref={lineChart}
+            ref={multiLineChart}
             id="multi-line-chart-canvas"
         />
     );
