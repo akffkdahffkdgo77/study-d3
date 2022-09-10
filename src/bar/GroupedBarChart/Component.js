@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import { animateBar, createGroupedBar } from '../utils/draw';
-import { createAxis, createCanvas, createToolTip } from '../../utils/settings';
-import { tooltipMouseLeave, tooltipMouseMove, tooltipMouseOver } from '../../utils/tooltip';
+import { animateBar, createGroupedBar } from 'bar/utils/draw';
+import { createAxis, createCanvas, createToolTip } from 'utils/settings';
+import { tooltipMouseLeave, tooltipMouseMove, tooltipMouseOver } from 'utils/tooltip';
 
 /**
  *  References :
@@ -27,7 +27,7 @@ export default function Component({ data, options }) {
         const graphWidth = currentWidth - options.dimensions.margin[1] - options.dimensions.margin[3];
         const graphHeight = options.dimensions.height - options.dimensions.margin[0] - options.dimensions.margin[2];
 
-        // Canvas + Graph 설정
+        // SVG 추가하기
         const graph = createCanvas({
             canvas: barChart.current,
             options: {
@@ -37,7 +37,7 @@ export default function Component({ data, options }) {
             }
         });
 
-        // X축, Y축 설정하기
+        // X Axis
         const { scale: xScale } = createAxis({
             graph,
             type: 'band',
@@ -47,6 +47,7 @@ export default function Component({ data, options }) {
             options: { padding: 0.25, tickSize: graphHeight, tickPadding: 10 }
         });
 
+        // Y Axis
         const { scale: yScale } = createAxis({
             graph,
             type: 'linear',
@@ -69,6 +70,7 @@ export default function Component({ data, options }) {
         // Category별 색상 설정하기
         const { scale: color } = createAxis({ graph, type: 'ordinal', domain: category, range: options.colors });
 
+        // TOOLTIP
         const tooltip = createToolTip({ tooltipOptions: options.tooltip });
 
         function mouseOver(_event, d) {
@@ -93,13 +95,14 @@ export default function Component({ data, options }) {
             tooltipMouseLeave({ tooltip });
         }
 
-        // Grouped Bar Graph 그리기
         createGroupedBar({
             graph,
             data: datasets,
-            x: (d) => xSubGroupScale(d.key),
-            y: yScale(0),
             category,
+            coords: {
+                x: (d) => xSubGroupScale(d.key),
+                y: yScale(0)
+            },
             options: {
                 width: xSubGroupScale.bandwidth(),
                 height: graphHeight - yScale(0),
@@ -113,8 +116,10 @@ export default function Component({ data, options }) {
 
         animateBar({
             graph: barChart.current,
-            y: (d) => yScale(d.value),
-            height: (d) => graphHeight - yScale(d.value)
+            options: {
+                y: (d) => yScale(d.value),
+                height: (d) => graphHeight - yScale(d.value)
+            }
         });
     }, [data, options]);
 
