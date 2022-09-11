@@ -85,6 +85,7 @@ export default function Component({ data, options }) {
                             <span class="d3-tooltip-value">${d.key}: </span>${d.value.toLocaleString()}
                         </div>`
             });
+            d3.select(this).attr('opacity', 0.5).attr('stroke', 'black').transition().duration(200);
         }
 
         function mouseMove(event, _d) {
@@ -93,6 +94,7 @@ export default function Component({ data, options }) {
 
         function mouseLeave(_event, _d) {
             tooltipMouseLeave({ tooltip });
+            d3.select(this).attr('opacity', 1).attr('stroke', 'none').transition().duration(200);
         }
 
         createGroupedBar({
