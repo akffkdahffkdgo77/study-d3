@@ -228,7 +228,6 @@ export default function ScatterLineChart() {
             .attr('cy', (d) => yScale(d.value))
             .attr('r', 6)
             .attr('fill', (d, i) => {
-                console.log(d.label, i);
                 if (i < 12 && d.value <= 80) {
                     return '#EE3FA2';
                 } else if (i < 24 && d.value <= 60) {
