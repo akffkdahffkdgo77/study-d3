@@ -61,7 +61,7 @@ export default function Component({ data, options }) {
             domain: d3.extent(yLabels, (d) => d),
             range: [graphHeight, 0],
             draw: true,
-            options: { graphWidth }
+            gridLineOptions: { graphWidth }
         });
 
         // TOOLTIP

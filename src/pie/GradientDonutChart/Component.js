@@ -11,7 +11,7 @@ import { createGradientDonut } from 'pie/utils/draw';
  */
 
 export default function Component({ data, options }) {
-    const donutChart = useRef(null);
+    const gradientDonutChart = useRef(null);
     const rendered = useRef(true);
 
     useEffect(() => {
@@ -22,17 +22,17 @@ export default function Component({ data, options }) {
 
         // Default 설정
         const { datasets } = data;
-        const width = donutChart.current.clientWidth + Math.floor(options.dimensions.margin[3] / 2);
+        const width = gradientDonutChart.current.clientWidth + Math.floor(options.dimensions.margin[3] / 2);
         const height = options.dimensions.height;
 
         // SVG 추가하기
         const graph = createCanvas({
-            canvas: donutChart.current,
+            canvas: gradientDonutChart.current,
             options: {
                 width,
                 height,
                 margin: options.dimensions.margin,
-                transform: `translate(${height / 2}, ${height / 2})`
+                transform: `translate(50%, 50%)`
             }
         });
 
@@ -46,7 +46,6 @@ export default function Component({ data, options }) {
 
         // TOOLTIP
         const tooltip = createToolTip({ tooltipOptions: options.tooltip });
-
         function onMouseOver(_event, d) {
             tooltipMouseOver({
                 tooltip,
@@ -54,7 +53,7 @@ export default function Component({ data, options }) {
                             ${d.data[0]}
                         </div>
                         <div class="d3-tooltip-label">
-                            <div class="d3-tooltip-color" style="background-color: ${colors(d.data[0])}">
+                            <div class="d3-tooltip-color" style="background: ${colors(d.data[0])}">
                                 <span></span>
                             </div>
                             <span class="d3-tooltip-value">게시글 수:</span>${d.data[1].toLocaleString()}
@@ -90,7 +89,7 @@ export default function Component({ data, options }) {
 
     return (
         <div
-            id="donut-chart"
+            id="gradient-donut-chart"
             style={{
                 display: 'flex',
                 alitngnItems: 'center',
@@ -98,7 +97,7 @@ export default function Component({ data, options }) {
                 backgroundColor: '#fff',
                 borderRadius: 4
             }}
-            ref={donutChart}
+            ref={gradientDonutChart}
         />
     );
 }

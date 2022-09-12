@@ -4,10 +4,10 @@ import { createBandScale, createLinearScale, createOrdinalScale } from './scale'
 import { drawBandXGridLines, drawXGridLines, drawYGridLines } from './gridLines';
 
 /**
- * SVG 생성
- * @param {HTMLElement} canvas HTML element
- * @param {object} options width, height, margin, transform
- * @returns {SVGGElement} returns svg <g> element
+ *  Appending SVG Element and Preparing graph
+ *  @param {HTMLElement} canvas HTML element
+ *  @param {object} options width, height, margin, transform
+ *  @returns {SVGGElement} returns svg <g> element
  */
 export const createCanvas = ({ canvas, options }) => {
     const {
@@ -31,15 +31,15 @@ export const createCanvas = ({ canvas, options }) => {
         .append('g')
         .attr('width', graphWidth)
         .attr('height', graphHeight)
-        .attr('transform', transform || `translate(${ml}, ${mt})`);
+        .style('transform', transform || `translate(${ml}px, ${mt}px)`);
 
     return graph;
 };
 
 /**
- * TOOLTIP 설정
- * @param {object} tooltipOptions tooltip styling options
- * @returns {HTMLDivElement} returns div element
+ *  Configuring Tooltip
+ *  @param {object} tooltipOptions tooltip styling options
+ *  @returns {HTMLDivElement} returns div element
  */
 export const createToolTip = ({ tooltipOptions }) => {
     let tooltip = null;
@@ -54,15 +54,16 @@ export const createToolTip = ({ tooltipOptions }) => {
 };
 
 /**
- * AXIS 생성
- * @param {SVGGElement} graph svg <g> element
- * @param {boolean} draw if true, will draw grid lines
- * @param {string} type band | linear | ordinal
- * @param {string} [axisType=''] x | y
- * @param {number[] | string[]} domain [min, max] or string[]
- * @param {number[]} range [min, max]
- * @param {object} options styling options (graphWidth, graphHeight, tickSize, tickFormat...)
- * @returns {object} returns scale and axis
+ *  Generating Axis
+ *  @param {SVGGElement} graph svg <g> element
+ *  @param {boolean} draw if true, will draw grid lines
+ *  @param {string} type band | linear | ordinal
+ *  @param {string} [axisType=''] x | y
+ *  @param {number[] | string[]} domain [min, max] or string[]
+ *  @param {number[]} range [min, max]
+ *  @param {object} options tick options ( tickSize, tickFormat...)
+ *  @param {object} gridLineOptions tick options (graphWidth, graphHeight...)
+ *  @returns {object} returns scale and axis
  */
 export const createAxis = ({ graph, draw, type, axisType = '', domain, range, options, gridLineOptions }) => {
     const axisG = graph.append('g');
@@ -87,9 +88,9 @@ export const createAxis = ({ graph, draw, type, axisType = '', domain, range, op
 
         if (draw) {
             if (axisType === 'y') {
-                drawYGridLines({ axisG, axis, options, gridLineOptions });
+                drawYGridLines({ axisG, axis, gridLineOptions });
             } else {
-                drawXGridLines({ axisG, axis, options, gridLineOptions });
+                drawXGridLines({ axisG, axis, gridLineOptions });
             }
         }
     } else if (type === 'ordinal') {
@@ -98,3 +99,12 @@ export const createAxis = ({ graph, draw, type, axisType = '', domain, range, op
 
     return { scale, axis };
 };
+
+/**
+ *  Dynamically appending attr() to graph
+ *  @param {object} options attr options (width, height, stroke ...)
+ *  @param {SVGGElement} graph SVG Element
+ */
+export function appendAttr({ options, graph }) {
+    Object.keys(options).forEach((key) => graph.attr(key, options[key]));
+}

@@ -1,5 +1,15 @@
 import * as d3 from 'd3';
+import { appendAttr } from 'utils/settings';
 
+/**
+ *
+ * @param {SVGGElement} graph SVG Element
+ * @param {object} data datasets
+ * @param {object} options attr options (width, height, stroke ...)
+ * @param {func} onMouseOver Mouse Over Interaction
+ * @param {func} onMouseMove Mouse Move Interaction
+ * @param {func} onMouseLeave Mouse Leave Interaction
+ */
 export const createDonut = ({ graph, data, options, onMouseOver, onMouseMove, onMouseLeave }) => {
     const pie = d3.pie().value((d) => d[1]);
     const computedData = pie(Object.entries(data));
@@ -9,19 +19,23 @@ export const createDonut = ({ graph, data, options, onMouseOver, onMouseMove, on
         .innerRadius(options.radius / 2)
         .outerRadius(options.radius);
 
-    graph
+    const donutG = graph
         .selectAll()
         .data(computedData)
         .join('path')
         .attr('d', arc)
-        .attr('fill', options.fill)
-        .attr('stroke', options.stroke)
-        .style('stroke-width', options.strokeWidth)
-        .style('opacity', options.opacity)
         .on('mouseover', onMouseOver)
         .on('mousemove', onMouseMove)
         .on('mouseleave', onMouseLeave);
+
+    appendAttr({ graph: donutG, options });
 };
+
+/**
+ *  References :
+ *  https://stackoverflow.com/questions/19114896/d3-js-chart-area-filling-with-different-colors
+ *  https://dev.to/cselig/controlling-svg-draw-order-in-d3-4n9l
+ */
 
 export const createGradientDonut = ({ graph, data, options, onMouseOver, onMouseMove, onMouseLeave }) => {
     const pie = d3.pie().value((d) => d[1]);

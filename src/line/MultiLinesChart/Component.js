@@ -66,7 +66,7 @@ export default function Component({ data, options }) {
             domain: [0, d3.max(category.map((category) => d3.max(datasets, (d) => d[category])))],
             range: [graphHeight, 0],
             draw: true,
-            options: { graphWidth }
+            gridLineOptions: { graphWidth }
         });
 
         // Colors

@@ -1,4 +1,5 @@
 import * as d3 from 'd3';
+import { appendAttr } from 'utils/settings';
 
 /**
  *  References :
@@ -17,13 +18,15 @@ export function lineTransition(path) {
         .on('end', () => d3.select(this).call(lineTransition));
 }
 
-export function appendAttr({ options, graph }) {
-    Object.keys(options).forEach((key) => graph.attr(key, options[key]));
-}
-
+/**
+ *  Line 그리기
+ *  @param {SVGGElement} graph SVG Element
+ *  @param {Array} data datasets
+ *  @param {object} coords x, y
+ *  @param {object} options attr options (width, height, stroke ...)
+ */
 export const createLine = ({ graph, data, coords, options }) => {
     const line = d3.line().curve(d3.curveCardinal).x(coords.x).y(coords.y);
-
     const lineG = graph.append('path').datum(data).attr('d', line).call(lineTransition);
     appendAttr({ graph: lineG, options });
 };

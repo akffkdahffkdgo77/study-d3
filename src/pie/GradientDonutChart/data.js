@@ -16,7 +16,7 @@ export const data = {
 };
 
 export const options = {
-    colors: ['#9ADCFF', '#FFF89A', '#FFB2A6', '#FF8AAE'],
+    colors: ['linear-gradient(-90deg, rgb(27, 66, 222), hsl(200, 96%, 64%))', '#F5F5F5'],
     tooltip: tooltipOptions,
     dimensions: {
         radius: 500 / 2 - 50,

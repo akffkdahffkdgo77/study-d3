@@ -32,7 +32,7 @@ export default function Component({ data, options }) {
                 width,
                 height,
                 margin: options.dimensions.margin,
-                transform: `translate(${height / 2}, ${height / 2})`
+                transform: `translate(50%, 50%)`
             }
         });
 
