@@ -1,3 +1,4 @@
+/* eslint-disable no-sparse-arrays */
 import * as d3 from 'd3';
 
 /**

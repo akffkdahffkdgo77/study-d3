@@ -69,12 +69,11 @@ export default function Component({ data, options }) {
             domain: yDomain,
             range: [graphHeight, 0],
             draw: true,
-            options: { graphWidth }
+            gridLineOptions: { graphWidth }
         });
 
         // Tooltip
         const tooltip = createToolTip({ tooltipOptions: options.tooltip });
-
         function onMouseOver(_event, d) {
             tooltipMouseOver({
                 tooltip,

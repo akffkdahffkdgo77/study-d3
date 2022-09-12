@@ -52,7 +52,7 @@ export default function Component({ data, options }) {
             domain: [0, d3.extent(datasets, (d) => d.value)[1]],
             range: [graphHeight, 0],
             draw: true,
-            options: { graphWidth }
+            gridLineOptions: { graphWidth }
         });
 
         // TOOLTIP

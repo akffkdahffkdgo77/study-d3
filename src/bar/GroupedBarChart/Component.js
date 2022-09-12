@@ -44,7 +44,11 @@ export default function Component({ data, options }) {
             domain: xLabels,
             range: [0, graphWidth],
             draw: true,
-            options: { padding: 0.25, tickSize: graphHeight, tickPadding: 10 }
+            options: {
+                padding: 0.25,
+                tickSize: graphHeight,
+                tickPadding: 10
+            }
         });
 
         // Y Axis
@@ -55,7 +59,7 @@ export default function Component({ data, options }) {
             domain: [0, d3.max(datasets.map((d) => d3.max(category.map((category) => d[category]))))],
             range: [graphHeight, 0],
             draw: true,
-            options: { graphWidth }
+            gridLineOptions: { graphWidth }
         });
 
         const { scale: xSubGroupScale } = createAxis({
@@ -64,7 +68,11 @@ export default function Component({ data, options }) {
             domain: category,
             range: [0, xScale.bandwidth()],
             draw: false,
-            options: { padding: 0.5, tickSize: 0, tickPadding: 0 }
+            options: {
+                padding: 0.5,
+                tickSize: 0,
+                tickPadding: 0
+            }
         });
 
         // Category별 색상 설정하기

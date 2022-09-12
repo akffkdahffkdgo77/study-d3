@@ -66,7 +66,7 @@ export default function Component({ data, options }) {
             ],
             range: [graphHeight, 0],
             draw: true,
-            options: { graphWidth }
+            gridLineOptions: { graphWidth }
         });
 
         // Category별 색상 설정하기

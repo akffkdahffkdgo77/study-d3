@@ -42,7 +42,10 @@ export default function Component({ data, options }) {
             domain: d3.extent(datasets, (d) => d.x),
             range: [0, graphWidth],
             draw: true,
-            options: { tickSize: graphHeight, tickPadding: 10 }
+            options: {
+                tickSize: graphHeight,
+                tickPadding: 10
+            }
         });
 
         // Y Axis
@@ -53,7 +56,7 @@ export default function Component({ data, options }) {
             domain: d3.extent(datasets, (d) => d.y),
             range: [graphHeight, 0],
             draw: true,
-            options: { graphWidth }
+            gridLineOptions: { graphWidth }
         });
 
         // Circle Radius 설정하기

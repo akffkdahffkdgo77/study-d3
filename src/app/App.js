@@ -5,10 +5,10 @@ import StackedBarChart from 'bar/StackedBarChart';
 import BubbleChart from 'bubble/BubbleChart';
 import LineChart from 'line/LineChart';
 import MultiLinesChart from 'line/MultiLinesChart';
+import ScatterLineChart from 'mixed/ScatterLineChart';
 import DonutChart from 'pie/DonutChart';
 import GradientDonutChart from 'pie/GradientDonutChart';
 
-// https://github.com/d3/d3/blob/main/API.md#d3-api-reference
 function App() {
     return (
         <div style={{ backgroundColor: '#000', minHeight: '100vh', padding: 100 }}>
@@ -19,7 +19,12 @@ function App() {
                 <DonutChart />
                 <GradientDonutChart />
             </div>
-            <AreaChart />
+            <div style={{ padding: 50 }}>
+                <AreaChart />
+            </div>
+            <div style={{ padding: 50 }}>
+                <ScatterLineChart />
+            </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', columnGap: 50, padding: 50 }}>
                 <BarChart />
                 <StackedBarChart />
