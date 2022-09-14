@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import { createAxis, createCanvas, createToolTip } from 'utils/settings';
+import { createCanvas, createToolTip } from 'utils/settings';
 import { tooltipMouseLeave, tooltipMouseMove, tooltipMouseOver } from 'utils/tooltip';
 
 // const width = 1000;
