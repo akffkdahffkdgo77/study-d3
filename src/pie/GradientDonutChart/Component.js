@@ -46,7 +46,7 @@ export default function Component({ data, options }) {
 
         // TOOLTIP
         const tooltip = createToolTip({ tooltipOptions: options.tooltip });
-        function onMouseOver(_event, d) {
+        function onMouseOver(event, d) {
             tooltipMouseOver({
                 tooltip,
                 html: ` <div class="d3-tooltip-name">

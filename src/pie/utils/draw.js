@@ -69,9 +69,9 @@ export const createGradientDonut = ({ graph, data, options, onMouseOver, onMouse
             return 'drop-shadow(1px 1px 4px black)';
         })
 
-        .on('mouseover', onMouseOver)
+        .on('pointerover', onMouseOver)
         .on('mousemove', onMouseMove)
-        .on('mouseleave', onMouseLeave)
+        .on('pointerleave', onMouseLeave)
         .transition()
         .duration(1200)
         .attrTween('d', (d) => {
