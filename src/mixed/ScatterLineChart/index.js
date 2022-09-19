@@ -3,7 +3,6 @@ import * as d3 from 'd3';
 import { createCanvas, createToolTip } from 'utils/settings';
 import { tooltipMouseLeave, tooltipMouseMove, tooltipMouseOver } from 'utils/tooltip';
 
-// const width = 1000;
 const height = 800;
 let [mt, mr, mb, ml] = [50, 50, 50, 50];
 // const graphWidth = width - mr - ml;

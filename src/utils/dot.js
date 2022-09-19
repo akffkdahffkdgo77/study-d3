@@ -3,7 +3,7 @@
  *
  *  These circles will be used to show tooltip. Therefore, need to pass mouse event listeners as well.
  *  If want only the tooltip, set the fill and stroke attributes of circle to 'none'.
- *  @param {SVGGElement} graph SVG Element - required
+ *  @param {SVGGElement} graph svg <g> element - required
  *  @param {Array} data datasets - required
  *  @param {object} options attr options (width, height ...) - optional
  *  @param {func} onMouseOver Mouse Over Interaction - required

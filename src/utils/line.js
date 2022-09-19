@@ -19,11 +19,12 @@ export function lineTransition(path) {
 }
 
 /**
- *  Line 그리기
- *  @param {SVGGElement} graph SVG Element
- *  @param {Array} data datasets
- *  @param {object} coords x, y
- *  @param {object} options attr options (width, height, stroke ...)
+ *  Drawing Lines
+ *
+ *  @param {SVGGElement} graph svg <g> element - required
+ *  @param {Array} data datasets - required
+ *  @param {object} coords x, y - required
+ *  @param {object} options line style options (width, height, stroke ...) - optional
  */
 export const createLine = ({ graph, data, coords, options }) => {
     const line = d3.line().curve(d3.curveCardinal).x(coords.x).y(coords.y);

@@ -1,10 +1,11 @@
 import * as d3 from 'd3';
 
 /**
- *  Band Scale
- *  @param {string[]} domain axis labels
- *  @param {number[]} range min, max values
- *  @param {object} options padding - required value
+ *  Generating Band Scale
+ *
+ *  @param {string[]} domain axis labels - required
+ *  @param {number[]} range min, max values - required
+ *  @param {object} options (padding) - required
  *  @returns {d3.ScaleBand}
  */
 export const createBandScale = ({ domain, range, options }) => {
@@ -24,9 +25,10 @@ export const createBandScale = ({ domain, range, options }) => {
  */
 
 /**
- *  Linear Scale
- *  @param {number[]} domain axis labels
- *  @param {number[]} range min, max values
+ *  Generating Linear Scale
+ *
+ *  @param {number[]} domain axis labels - required
+ *  @param {number[]} range min, max values - required
  *  @returns {d3.ScaleLinear}
  */
 export const createLinearScale = ({ domain, range }) => {
@@ -34,9 +36,11 @@ export const createLinearScale = ({ domain, range }) => {
 };
 
 /**
- *  Ordinal Scale
+ *  Generating Ordinal Scale
+ * 
+ *  Recommended for generating color scale.
     @param {number[]} domain optional
- *  @param {number[]} range min, max values
+ *  @param {number[]} range min, max values - required
  *  @returns {d3.ScaleOrdinal}
  */
 export const createOrdinalScale = ({ domain, range }) => {

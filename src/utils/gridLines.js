@@ -3,11 +3,11 @@
  *
  *  Recommended for Bar Graph
  *
- *  @param {SVGGElement} axisG SVG Group Element - required
+ *  @param {SVGGElement} graph svg <g> element - required
  *  @param {d3.Axis} axis  axis - required
- *  @param {d3.ScaleBand} scale - d3.ScaleBand
+ *  @param {d3.ScaleBand} scale - scale generated using d3.scaleBand(), required to calculate position of grid lines - required
  */
- export const drawBandXGridLines = ({ axisG, axis, scale }) => {
+export const drawBandXGridLines = ({ axisG, axis, scale }) => {
     axisG
         .call(axis)
         .call((g) => g.select('.domain').attr('stroke', 'transparent'))
@@ -23,9 +23,10 @@
  *  Drawing Axis on graph
  *
  *  Recommended for Linear Graph
- *  @param {*} axisG SVG Group Element - required
- *  @param {*} axis axis - required
- *  @param {options} gridLineOptions styling options - required
+ *
+ *  @param {SVGGElement} graph svg <g> element - required
+ *  @param {d3.Axis} axis axis - required
+ *  @param {object} gridLineOptions styling options for grid lines - optional
  */
 export const drawXGridLines = ({ axisG, axis, gridLineOptions }) => {
     axisG
@@ -38,9 +39,10 @@ export const drawXGridLines = ({ axisG, axis, gridLineOptions }) => {
  *  Drawing Axis on graph
  *
  *  Recommended for Linear Graph
- *  @param {SVGGElement} axisG SVG Group Element - required
+ *
+ *  @param {SVGGElement} graph svg <g> element - required
  *  @param {d3.Axis} axis  axis - required
- *  @param {options} gridLineOptions styling options - required
+ *  @param {object} gridLineOptions styling options for grid lines - optional
  */
 export const drawYGridLines = ({ axisG, axis, gridLineOptions }) => {
     axisG

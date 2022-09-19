@@ -4,8 +4,8 @@ import * as d3 from 'd3';
  *  Generating Axis for Band Scale
  *
  *  Recommended for bar graph. Should be used to generate x axis.
- *  @param {d3.AxisScale} scale The scale to be used for axis generation.
- *  @param {object} options Tick options (tickSize, tickPadding ...)
+ *  @param {d3.AxisScale} scale scale to be used for axis generation - required
+ *  @param {object} options tick options (tickSize, tickPadding) - required
  *  @returns {d3.Axis} returns x axis for d3.scaleBand()
  */
 export const createBandXAxis = ({ scale, options }) => {
@@ -19,8 +19,8 @@ export const createBandXAxis = ({ scale, options }) => {
  *  Generating Axis for Linear Scale
  *
  *  Recommneded for x axis.
- *  @param {d3.AxisScale} scale The scale to be used for axis generation.
- *  @param {object} options Tick options (tickSize, tickPadding ...)
+ *  @param {d3.AxisScale} scale scale to be used for axis generation - required
+ *  @param {object} options tick options (ticks, tickSize, tickFormat, tickPadding) - required
  *  @returns {d3.Axis} returns x axis for d3.linearScale()
  */
 export const createXAxis = ({ scale, options }) => {
@@ -36,7 +36,7 @@ export const createXAxis = ({ scale, options }) => {
  *  Generating Axis for Linear Scale
  *
  *  Recommended for y axis.
- *  @param {d3.AxisScale} scale The scale to be used for axis generation.
+ *  @param {d3.AxisScale} scale scale to be used for axis generation - required
  *  @returns {d3.Axis} returns y axis for d3.linearScale()
  */
 export const createYAxis = ({ scale }) => {
