@@ -1,11 +1,10 @@
 import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import { createCanvas, createToolTip } from 'utils/settings';
-import { tooltipMouseLeave, tooltipMouseMove, tooltipMouseOver } from 'utils/tooltip';
 
+const width = 1000;
 const height = 800;
 let [mt, mr, mb, ml] = [50, 50, 50, 50];
-// const graphWidth = width - mr - ml;
+const graphWidth = width - mr - ml;
 const graphHeight = height - mt - mb;
 
 const data = Array.from(Array(47)).map((_, i) => ({
@@ -31,18 +30,21 @@ export default function ScatterLineChart() {
 
         rendered.current = false;
 
-        const currentWidth = mixedChart.current.clientWidth;
-        const width = currentWidth + Math.floor(ml / 2);
-        const graphWidth = currentWidth - mr - ml;
+        // SVG 추가하기
+        const svg = d3
+            .select(mixedChart.current)
+            .append('svg')
+            .attr('width', width)
+            .attr('height', height)
+            .attr('viewBox', [0, 0, width, height]);
 
-        const graph = createCanvas({
-            canvas: mixedChart.current,
-            options: {
-                width: width,
-                height: height,
-                margin: [mt, mr, mb, ml]
-            }
-        });
+        // GRAPH 추가하기
+        const graph = svg
+            .append('g')
+            .attr('width', graphWidth)
+            .attr('height', graphHeight)
+            // translate를 해서 그래프가 전체 캔버스의 중심에서 그려지도록 설정
+            .attr('transform', `translate(${ml}, ${mt})`);
 
         // 그룹을 추가한 다음 x축 데이터를 그룹에 추가하기
         const xAxisG = graph.append('g');
@@ -108,33 +110,21 @@ export default function ScatterLineChart() {
             .call((g) => g.selectAll('.tick line').attr('stroke-dasharray', (d, i) => (d === 0 || d === 100 ? 0 : 5)))
             .call((g) => g.selectAll('.tick').selectChild('line').remove());
 
-        const tooltip = createToolTip({
-            tooltipOptions: {
-                position: 'absolute',
-                top: 0,
-                'z-index': 10,
-                'min-width': '120px',
-                'border-radius': '4px',
-                color: '#fff',
-                opacity: '0',
-                overflow: 'hidden'
-            }
-        });
         // Tooltip 설정하기
-        // const tooltip = d3
-        //     .select(mixedChart.current)
-        //     .append('div')
-        //     .attr('class', 'd3-tooltip')
-        //     .style('position', 'absolute')
-        //     .style('z-index', '10')
-        //     .style('visibility', 'hidden')
-        //     .style('min-width', '120px')
-        //     .style('border-radius', '4px')
-        //     .style('color', '#fff')
-        //     .style('overflow', 'hidden');
+        const tooltip = d3
+            .select(mixedChart.current)
+            .append('div')
+            .attr('class', 'd3-mixed-tooltip')
+            .style('position', 'absolute')
+            .style('z-index', '10')
+            .style('visibility', 'hidden')
+            .style('min-width', '120px')
+            .style('border-radius', '4px')
+            .style('color', '#fff')
+            .style('overflow', 'hidden');
 
         // See : https://d3-graph-gallery.com/graph/connectedscatter_tooltip.html
-        function onMouseOver(event, d) {
+        function onMouseOver(_event, d) {
             let backgroundColor = '';
             if (d.label < 12 && d.value <= 80) {
                 backgroundColor = '#EE3FA2';
@@ -148,23 +138,27 @@ export default function ScatterLineChart() {
                 backgroundColor = '#1B43E0';
             }
 
-            tooltipMouseOver({
-                tooltip,
-                html: `<div class="d3-tooltip-name">
-                            ${d.label}
+            tooltip
+                .html(
+                    `<div class="d3-tooltip-name">
+                    ${d.label}
+                    </div>
+                    <div class="d3-tooltip-label">
+                        <div class="d3-tooltip-color" style="background-color: ${backgroundColor}">
+                            <span></span>
                         </div>
-                        <div class="d3-tooltip-label">
-                            <div class="d3-tooltip-color" style="background-color: ${backgroundColor}">
-                                <span></span>
-                            </div>
-                            <span class="d3-tooltip-value">${d.label}:</span>${d.value.toLocaleString()}
-                        </div>`
-            });
-            tooltipMouseMove({ tooltip, event });
+                        <span class="d3-tooltip-value">${d.label}:</span>${d.value.toLocaleString()}
+                    </div>`
+                )
+                .style('visibility', 'visible');
+        }
+
+        function onMouseMove(event, _d) {
+            tooltip.style('top', event.pageY - 10 + 'px').style('left', event.pageX + 10 + 'px');
         }
 
         function onMouseLeave(_event, _d) {
-            tooltipMouseLeave({ tooltip });
+            tooltip.style('visibility', 'hidden');
         }
 
         graph
@@ -247,9 +241,9 @@ export default function ScatterLineChart() {
                 }
             })
             .attr('stroke', 'white')
-            .on('pointerover', onMouseOver)
-            // .on('pointerleave', onMouseMove)
-            .on('pointerleave', onMouseLeave);
+            .on('mouseover', onMouseOver)
+            .on('mousemove', onMouseMove)
+            .on('mouseleave', onMouseLeave);
     }, []);
 
     return (
