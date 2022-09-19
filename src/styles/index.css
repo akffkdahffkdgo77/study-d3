@@ -45,10 +45,6 @@ code {
     margin-right: 5px;
 }
 
-.bubbles:hover {
-    stroke: black;
-}
-
 svg {
     max-width: 100%;
 }
