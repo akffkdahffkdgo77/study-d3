@@ -25,3 +25,6 @@ yarn start
 - [x] Line Chart
 - [x] Multi Line Chart
 - [x] Scatter + Line Chart
+
+## References
+- https://d3-graph-gallery.com/index.html
