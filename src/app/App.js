@@ -1,43 +1,74 @@
-import AreaChart from 'area/AreaChart';
-import BarChart from 'bar/BarChart';
-import GroupedBarChart from 'bar/GroupedBarChart';
-import StackedBarChart from 'bar/StackedBarChart';
-import BubbleChart from 'bubble/BubbleChart';
-import LineChart from 'line/LineChart';
-import MultiLinesChart from 'line/MultiLinesChart';
-import ScatterLineChart from 'mixed/ScatterLineChart';
-import DonutChart from 'pie/DonutChart';
-import GradientDonutChart from 'pie/GradientDonutChart';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+
+import BaseLayout from 'layout/BaseLayout';
+
+import AreaChartDemo from 'pages/AreaChartDemo';
+import BarChartDemo from 'pages/BarChartDemo';
+import BubbleChartDemo from 'pages/BubbleChartDemo';
+import DonutChartDemo from 'pages/DonutChartDemo';
+import GradientDonutChartDemo from 'pages/GradientDonutChartDemo';
+import GroupedBarChartDemo from 'pages/GroupedBarChartDemo';
+import LineChartDemo from 'pages/LineChartDemo';
+import MultiLineChartDemo from 'pages/MultiLineChartDemo';
+import StackedBarChartDemo from 'pages/StackedBarChartDemo';
+import ScatterLineChartDemo from 'pages/ScatterLineChartDemo';
 
 function App() {
     return (
-        <div style={{ backgroundColor: '#000', minHeight: '100vh', padding: 100 }}>
-            <h1 style={{ width: '100%', textAlign: 'center', color: '#fff', marginTop: 0 }}>
-                Common Chart Clone Coding
-            </h1>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', columnGap: 50, padding: 50 }}>
-                <DonutChart />
-                <GradientDonutChart />
-            </div>
-            <div style={{ padding: 50 }}>
-                <AreaChart />
-            </div>
-            <div style={{ padding: 50 }}>
-                <ScatterLineChart />
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', columnGap: 50, padding: 50 }}>
-                <BarChart />
-                <StackedBarChart />
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', columnGap: 50, padding: 50 }}>
-                <GroupedBarChart />
-                <BubbleChart />
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', columnGap: 50, padding: 50 }}>
-                <LineChart />
-                <MultiLinesChart />
-            </div>
-        </div>
+        <RouterProvider
+            router={createBrowserRouter([
+                {
+                    path: '',
+                    element: <BaseLayout />,
+                    children: [
+                        {
+                            path: '',
+                            element: <AreaChartDemo />
+                        },
+                        {
+                            path: 'area',
+                            element: <AreaChartDemo />
+                        },
+                        {
+                            path: 'bar',
+                            element: <BarChartDemo />
+                        },
+                        {
+                            path: 'bubble',
+                            element: <BubbleChartDemo />
+                        },
+                        {
+                            path: 'donut',
+                            element: <DonutChartDemo />
+                        },
+                        {
+                            path: 'gradient-donut',
+                            element: <GradientDonutChartDemo />
+                        },
+                        {
+                            path: 'grouped-bar',
+                            element: <GroupedBarChartDemo />
+                        },
+                        {
+                            path: 'line',
+                            element: <LineChartDemo />
+                        },
+                        {
+                            path: 'multi-line',
+                            element: <MultiLineChartDemo />
+                        },
+                        {
+                            path: 'scatter-line',
+                            element: <ScatterLineChartDemo />
+                        },
+                        {
+                            path: 'stacked-bar',
+                            element: <StackedBarChartDemo />
+                        }
+                    ]
+                }
+            ])}
+        />
     );
 }
 
