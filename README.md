@@ -1,5 +1,6 @@
 <img src="https://capsule-render.vercel.app/api?section=header&type=waving&height=300&text=Study%20D3&color=gradient&fontSize=90&animation=fadeIn" alt="" />
 
+![Create React App](https://img.shields.io/badge/create--react--app-303846?style=for-the-badge&logo=createreactapp&logoColor=09D3AC)
 ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
 ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
 ![D3.js](https://img.shields.io/badge/D3.js-%23f9a03c.svg?style=for-the-badge&logo=d3.js&logoColor=white)
